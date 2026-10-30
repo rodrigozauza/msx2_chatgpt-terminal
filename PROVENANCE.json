@@ -176,5 +176,21 @@
     ],
     "physicalValidation": "RETEST_PENDING",
     "reference": "https://ftp.whtech.com/YAHOO%20group%20backups/GENEVE/FILES/v9938%20Application%20Manual.htm"
+  },
+  "renderDosRevision": {
+    "version": "0.7.2",
+    "previous": "0.7.1",
+    "date": "2026-10-29",
+    "userReported": ">900ms typing; corrupted DOS glyphs after Esc",
+    "screen": 7,
+    "changes": [
+      "glyph atlas and VDP command engine",
+      "incremental editor/status/cursor",
+      "hardware scroll and shifts",
+      "linear physical console backup/restore",
+      "physical VRAM and timing test model",
+      "atomic build outputs"
+    ],
+    "physicalValidation": "RETEST_PENDING"
   }
 }

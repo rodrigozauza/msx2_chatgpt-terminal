@@ -39,9 +39,45 @@ function machine(opts={}){
  mem[0xfcc0]=0x5a;mem[0xfcc1]=0x80;
  const tpa=opts.tpa||0xf000;mem[6]=tpa&255;mem[7]=tpa>>8;
  const vram=Uint8Array.from({length:131072},(_,i)=>(i*37+(i>>8)*17+5)&255);
- const originalVRAM=Buffer.from(vram);
- let key=null,steps=0,output='',exited=false;
+ const physicalVRAM=Uint8Array.from(vram);
+ const originalVRAM=Buffer.from(physicalVRAM);
+ for(let i=0;i<vram.length;i++)vram[i]=physicalVRAM[(i>>>1)|((i&1)<<16)];
+ const physicalAddress=a=>(regs[0]&14)===10?((a>>>1)|((a&1)<<16)):a;
+ const putPhysical=(p,value)=>{physicalVRAM[p]=value;vram[((p&65535)<<1)|(p>>>16)]=value;};
+ const writeVRAM=(a,value)=>putPhysical(physicalAddress(a),value);
+ let key=null,steps=0,tstates=0,output='',exited=false;
  const transfers=[],registerWrites=[];
+ let controlLatch=null,busyUntil=0;
+ const commandRegs=new Uint8Array(64),commands=[];
+ const commandWord=index=>commandRegs[index]|commandRegs[index+1]<<8;
+ const pixelAddress=(x,y)=>physicalAddress(y*((regs[0]&14)===10?256:128)+(x>>1));
+ function executeCommand(){
+  const cmd=commandRegs[46],sx=commandWord(32),sy=commandWord(34),dx=commandWord(36),dy=commandWord(38),nx=commandWord(40),ny=commandWord(42);
+  assert.ok([0xd0,0xc0,0x83].includes(cmd),'Supported VDP command');assert.ok([0,4].includes(commandRegs[45]));const direction=commandRegs[45]&4?-1:1;
+  const width=(regs[0]&14)===10?512:256;
+  assert.ok((direction<0?dx-nx+2>=0:dx+nx<=width)&&dy+ny<=((regs[0]&14)===10?512:1024));
+  commands.push({cmd,sx,sy,dx,dy,nx,ny,mode:regs[0]&14});
+  assert.ok(tstates>=busyUntil,'Previous VDP command completed');
+  let commandCost=0;
+  if(cmd===0xd0){
+   assert.ok(!(sx&1)&&!(dx&1)&&!(nx&1));
+   const bytes=[];for(let y=0;y<ny;y++)for(let x=0;x<nx;x+=2)bytes.push(physicalVRAM[pixelAddress(sx+direction*x,sy+y)]);
+   let i=0;for(let y=0;y<ny;y++)for(let x=0;x<nx;x+=2)putPhysical(pixelAddress(dx+direction*x,dy+y),bytes[i++]);
+   commandCost=16*bytes.length;
+  }else if(cmd===0xc0){
+   assert.ok(!(dx&1)&&!(nx&1));
+   for(let y=0;y<ny;y++)for(let x=0;x<nx;x+=2)putPhysical(pixelAddress(dx+x,dy+y),commandRegs[44]);
+   commandCost=8*(nx>>1)*ny;
+  }else{
+   for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const p=pixelAddress(dx+x,dy+y),shift=((dx+x)&1)?0:4;putPhysical(p,physicalVRAM[p]^((commandRegs[44]&15)<<shift));}
+   commandCost=32*nx*ny;
+  }
+  busyUntil=tstates+commandCost;
+ }
+ function writeRegister(index,value){
+  if(index<24)regs[index]=value;else commandRegs[index]=value;
+  if(index===46)executeCommand();
+ }
  const core={
   mem_read:a=>mem[a&65535],
   mem_write:(a,v)=>{
@@ -50,8 +86,22 @@ function machine(opts={}){
      (a>=0xf3df&&a<0xf3e7)||(a>=0xffe7&&a<0xfff7)||a===0xfaf6||(a>=0xf847&&a<0xf857)||a===0xfcaf||a===0xf3de,'Unexpected memory write '+a.toString(16));
    mem[a]=v;
   },
-  io_read:p=>{throw Error('Unexpected direct IN '+p);},
-  io_write:p=>{throw Error('Unexpected direct OUT '+p);}
+  io_read:p=>{
+   assert.equal(p&255,(opts.vdpReadPort||0x98)+1);assert.equal(regs[15],2);assert.equal(cpu.getState().iff1,0);
+   return tstates<busyUntil?1:0;
+  },
+  io_write:(p,value)=>{
+   const port=p&255,control=(opts.vdpWritePort||0x98)+1;
+   if(port===control){
+    assert.equal(cpu.getState().iff1,0,'Atomic VDP control latch');
+    if(controlLatch===null)controlLatch=value;
+    else{assert.ok(value&0x80);writeRegister(value&63,controlLatch);controlLatch=null;}
+   }else if(port===control+2){
+    assert.equal(cpu.getState().iff1,0,'Atomic command parameter stream');
+    const index=regs[17]&63;writeRegister(index,value);if(!(regs[17]&128))regs[17]=index+1;
+   }else throw Error('Unexpected VDP OUT '+port.toString(16));
+  }
+
  };
  const cpu=new ctx.Z80(core);
  let state=cpu.getState();state.pc=256;state.sp=opts.sp||0xf000;state.iff1=1;state.iff2=1;cpu.setState(state);
@@ -171,7 +221,7 @@ function machine(opts={}){
  function step(){
   const s=cpu.getState();steps++;
   if(s.pc===0){exited=true;return;}
-  if(s.pc===0x0c){assert.equal(hl(s),0x2d);assert.equal(s.a,0x80);s.a=opts.generation===undefined?1:opts.generation;ret(s);return;}
+  if(s.pc===0x0c){assert.equal(s.a,0x80);const at=hl(s);assert.ok([0x2d,6,7].includes(at));s.a=at===6?(opts.vdpReadPort||0x98):at===7?(opts.vdpWritePort||0x98):(opts.generation===undefined?1:opts.generation);ret(s);return;}
   if(s.pc===5){dos(s);return;}
   if(s.pc===0xffca){netExt(s);return;}
   if(s.pc===0xc100||s.pc===0xc720||(s.pc===0x1c&&s.ix===0x4020)){netAPI(s);return;}
@@ -179,17 +229,20 @@ function machine(opts={}){
    assert.equal(s.iy>>8,0x80,'Main ROM slot from EXPTBL');
    assert.ok(s.sp>=0xc000,'BIOS stack page 3');
    const fn=s.ix;
+   tstates+=1600; // Conservative CALSLT/BIOS dispatch allowance; 64T/VRAM byte below.
    if(fn===0x59){
-    assert.equal(hl(s),0);assert.equal(de(s),0x6000);assert.equal(bc(s),16384);
-    mem.set(vram.slice(0,16384),de(s));transfers.push({kind:'read',vram:hl(s),ram:de(s),bytes:bc(s)});clobber(s);
+    assert.equal(hl(s),0);assert.equal(de(s),0x6400);assert.equal(bc(s),16384);
+    tstates+=64*bc(s);
+    for(let i=0;i<bc(s);i++)mem[de(s)+i]=physicalVRAM[physicalAddress(hl(s)+i)];transfers.push({kind:'read',vram:hl(s),ram:de(s),bytes:bc(s)});clobber(s);
    }else if(fn===0x5c){
     assert.ok(hl(s)>=0x4000&&hl(s)+bc(s)<=0xa000,'BIOS RAM source outside ROM page 0');
-    assert.ok(de(s)+bc(s)<=65536,'VRAM bounds');assert.equal(mem[0xfaf6],0,'Active page zero');
-    vram.set(mem.slice(hl(s),hl(s)+bc(s)),de(s));
+    assert.ok(de(s)+bc(s)<=65536,'VRAM bounds');assert.ok(mem[0xfaf6]<=1,'Display/atlas active page');
+    tstates+=64*bc(s);
+    for(let i=0;i<bc(s);i++)writeVRAM(mem[0xfaf6]*65536+de(s)+i,mem[hl(s)+i]);
     transfers.push({kind:'write',vram:de(s),ram:hl(s),bytes:bc(s)});clobber(s);
    }else if(fn===0x56){
     assert.ok(hl(s)+bc(s)<=16384,'VRAM fill bounds');
-    vram.fill(s.a,hl(s),hl(s)+bc(s));transfers.push({kind:'fill',vram:hl(s),bytes:bc(s),value:s.a});clobber(s);
+    for(let i=0;i<bc(s);i++)writeVRAM(hl(s)+i,s.a);transfers.push({kind:'fill',vram:hl(s),bytes:bc(s),value:s.a});clobber(s);
    }else if(fn===0x47){
     assert.ok(s.c<24,'MSX2 VDP registers');
     regs[s.c]=s.b;mem[s.c<8?0xf3df+s.c:0xffe7+s.c-8]=s.b;registerWrites.push({register:s.c,value:s.b});
@@ -204,7 +257,7 @@ function machine(opts={}){
    }else throw Error('Unexpected BIOS routine '+fn.toString(16));
    ret(s);return;
   }
-  cpu.run_instruction();
+  tstates+=cpu.run_instruction()+2; // Includes a conservative MSX opcode-fetch wait allowance.
  }
  function until(predicate,limit=12000000){const start=steps;while(!predicate()){assert.ok(steps-start<limit,'Step limit at '+cpu.getState().pc.toString(16));step();}return steps-start;}
  function boot(){return until(()=>exited||cpu.getState().pc===symbols.main_loop);}
@@ -220,16 +273,16 @@ function machine(opts={}){
  }
  function setEditor(text,cursor){
   const data=typeof text==='string'?encode(text):Buffer.from(text);
-  assert.ok(data.length<=2047);mem.fill(0,0x4800,0x5000);mem.set(data,0x4800);
+  assert.ok(data.length<=2047);mem.fill(0,0x4c00,0x5400);mem.set(data,0x4c00);
   put16(symbols.editor_length,data.length);put16(symbols.editor_cursor,cursor===undefined?data.length:cursor);
   put16(symbols.view_top,0);call('editor_update');call('render_dirty');
  }
- function text(){return Buffer.from(mem.slice(0x4800,0x4800+get16(symbols.editor_length)));}
- function row(n){return Buffer.from(mem.slice(0x4000+n*80,0x4000+n*80+80));}
+ function text(){return Buffer.from(mem.slice(0x4c00,0x4c00+get16(symbols.editor_length)));}
+ function row(n){return Buffer.from(mem.slice(0x4400+n*80,0x4400+n*80+80));}
  function exit(){
   if(!exited)press(27);
   assert.ok(exited);
-  assert.deepEqual(Buffer.from(vram.slice(0,16384)),originalVRAM.slice(0,16384),'DOS low 16K VRAM restored');assert.deepEqual(Buffer.from(vram.slice(0xd400)),originalVRAM.slice(0xd400),'VRAM outside bitmap untouched');assert.equal(mem[0xfaf6],opts.acpage||0);
+  assert.deepEqual(Buffer.from(physicalVRAM.slice(0,16384)),originalVRAM.slice(0,16384),'DOS physical low 16K VRAM restored');assert.equal(mem[0xfaf6],opts.acpage||0);
   assert.deepEqual(Buffer.from(regs),originalRegs,'VDP registers restored');
   assert.deepEqual(Buffer.from([...mem.slice(0xf3df,0xf3e7),...mem.slice(0xffe7,0xfff7)]),originalRegs,'BIOS mirrors restored');
   assert.equal(mem[0xfcaf],originalMode);assert.equal(mem[0xf3de],originalCNS);
@@ -237,8 +290,8 @@ function machine(opts={}){
   assert.equal(cpu.getState().iff1,1,'Interrupts enabled');
   assert.deepEqual(Buffer.from(mem.slice(0xf847,0xf857)),argOriginal,'ARG restored');
  }
- return {mem,vram,regs,cpu,transfers,registerWrites,boot,press,idle,call,setEditor,text,row,exit,get16,put16,files,fsCalls,netlog,get dta(){return dta;},
-  get steps(){return steps;},get output(){return output;},get exited(){return exited;}};
+ return {mem,vram,physicalVRAM,commands,regs,cpu,transfers,registerWrites,boot,press,idle,call,setEditor,text,row,exit,get16,put16,files,fsCalls,netlog,get dta(){return dta;},
+  get tstates(){return tstates;},get busyUntil(){return busyUntil;},get steps(){return steps;},get output(){return output;},get exited(){return exited;}};
 }
 const results=[];
 const startupOnly=process.argv.includes('--startup');
@@ -272,7 +325,7 @@ for(const [label,regs] of [['TEXT2 80 columns',[4,0x70,3,0,1,0x36,7,0xf1]],['TEX
  });
 }
 test('COM format, font size and full eight-pixel glyphs',()=>{
- assert.equal(binary[0],0xc3);assert.ok(binary.length+256<0x4000);assert.equal(font.length,2048);assert.ok(font.some(v=>v>15));
+ assert.equal(binary[0],0xc3);assert.ok(binary.length+256<0x4400);assert.equal(font.length,2048);assert.ok(font.some(v=>v>15));
  for(let code=32;code<127;code++)assert.ok(spec.patterns[String.fromCharCode(code)]);
  return {comBytes:binary.length,entry:256,end:256+binary.length};
 });
@@ -280,9 +333,9 @@ test('SCREEN7 bitmap, 80 columns, 16 colors, all scanlines and page boundaries',
  const m=machine();m.boot();assert.equal(m.mem[0xfcaf],7);
  assert.equal(m.regs[0],10);assert.equal(m.regs[2],31);assert.equal(m.regs[8],10);assert.equal(m.regs[9],128);
  for(let y=0;y<192;y++)for(let x=0;x<512;x++){
-  const row=y>>3,col=Math.floor((x-16)/6),colors=m.mem[0x5420+row];
+  const row=y>>3,col=Math.floor((x-16)/6),colors=m.mem[0x5820+row];
   let expected=colors&15;
-  if(x>=16&&x<496){const code=m.mem[0x4000+row*80+col];let bits=font[code*8+(y&7)];if(row===20&&col===0)bits^=255;
+  if(x>=16&&x<496){const code=m.mem[0x4400+row*80+col];let bits=font[code*8+(y&7)];if(row===20&&col===0)bits^=255;
     expected=(bits>>(7-(x-16)%6)&1)?colors>>4:colors&15;}
   const packed=m.vram[y*256+(x>>1)],actual=x&1?packed&15:packed>>4;
   assert.equal(actual,expected,'x='+x+' y='+y);
@@ -341,34 +394,33 @@ test('Long newline-only buffer uses 16-bit row counters',()=>{
  m.press(30);assert.equal(m.get16(symbols.editor_cursor),999);m.exit();
 });
 test('2047-byte full buffer rejects insert without overwrite',()=>{
- const m=machine();m.boot();m.setEditor('A'.repeat(2047));m.mem[0x5000]=0x5a;
+ const m=machine();m.boot();m.setEditor('A'.repeat(2047));m.mem[0x5400]=0x5a;
  const before=m.text();m.press(66);assert.deepEqual(m.text(),before);assert.equal(m.get16(symbols.editor_cursor),2047);
- assert.equal(m.mem[0x4800+2047],0);assert.equal(m.mem[symbols.buffer_full],1);assert.equal(m.mem[0x5420+19],0x81);m.exit();
+ assert.equal(m.mem[0x4c00+2047],0);assert.equal(m.mem[symbols.buffer_full],1);assert.equal(m.mem[0x5820+19],0x81);m.exit();
 });
 test('Insertion at start near limit and deletion preserve NUL',()=>{
  const m=machine();m.boot();m.setEditor('B'.repeat(2046),0);m.press(65);
- assert.equal(m.text().length,2047);assert.equal(m.text()[0],65);assert.equal(m.text()[2046],66);assert.equal(m.mem[0x4fff],0);
- m.press(8);assert.equal(m.text().length,2046);assert.equal(m.mem[0x4800+2046],0);m.exit();
+ assert.equal(m.text().length,2047);assert.equal(m.text()[0],65);assert.equal(m.text()[2046],66);assert.equal(m.mem[0x53ff],0);
+ m.press(8);assert.equal(m.text().length,2046);assert.equal(m.mem[0x4c00+2046],0);m.exit();
 });
 test('Help/calibration overlays preserve conversation and editor',()=>{
  const m=machine();m.boot();m.setEditor('text\nkept');
- const conversation=Buffer.from(m.mem.slice(0x4050,0x45f0));const editor=m.text();const cursor=m.get16(symbols.editor_cursor);
+ const conversation=Buffer.from(m.mem.slice(0x4450,0x49f0));const editor=m.text();const cursor=m.get16(symbols.editor_cursor);
  m.press(7);assert.equal(m.mem[symbols.overlay_mode],1);m.press(18);assert.equal(m.mem[symbols.overlay_mode],2);
  savePNG(m.vram,'PREVIA-FONTE.png');
- m.press(18);assert.equal(m.mem[symbols.overlay_mode],0);assert.deepEqual(Buffer.from(m.mem.slice(0x4050,0x45f0)),conversation);
+ m.press(18);assert.equal(m.mem[symbols.overlay_mode],0);assert.deepEqual(Buffer.from(m.mem.slice(0x4450,0x49f0)),conversation);
  assert.deepEqual(m.text(),editor);assert.equal(m.get16(symbols.editor_cursor),cursor);m.exit();
 });
 test('Local preview and window scroll preserve typed message',()=>{
  const m=machine();m.boot();m.setEditor(('LINHA LOCAL\n').repeat(22));
- const text=m.text();m.press(16);assert.deepEqual(m.text(),text);assert.ok(Buffer.from(m.mem.slice(0x4050,0x45f0)).toString().includes('Nada foi enviado.'));
+ const text=m.text();m.press(16);assert.deepEqual(m.text(),text);assert.ok(Buffer.from(m.mem.slice(0x4450,0x49f0)).toString().includes('Nada foi enviado.'));
  assert.equal(m.get16(symbols.editor_length),text.length);m.exit();
 });
-test('Dirty rows redraw bitmap; blinking redraws one row',()=>{
- const m=machine();m.boot();let n=m.transfers.length;m.press(65);let tr=m.transfers.slice(n);
- assert.equal(tr.filter(t=>t.kind==='write').reduce((a,t)=>a+t.bytes,0),4096);
- assert.ok(tr.every(t=>t.vram>=19*2048&&t.vram<23*2048));
- n=m.transfers.length;m.idle(31);tr=m.transfers.slice(n);
- assert.equal(tr.filter(t=>t.kind==='write').reduce((a,t)=>a+t.bytes,0),2048);m.exit();
+test('Dirty cells use cached VDP glyphs; blink copies at most two cells',()=>{
+ const m=machine();m.boot();let n=m.transfers.length,commands=m.commands.length;m.press(65);
+ assert.equal(m.transfers.slice(n).filter(t=>t.kind==='write').length,0,'No CPU bitmap uploads while typing');
+ assert.ok(m.commands.length>commands);commands=m.commands.length;m.idle(31);
+ assert.ok(m.commands.length-commands<=2,'Blink touches only the cursor cell');m.exit();
 });
 test('Bitmap cursor preserves adjacent cells at even and odd columns',()=>{
  const m=machine();m.boot();m.setEditor('AB',0);
@@ -623,7 +675,7 @@ test('History empty preserves editor and remains in live mode',()=>{
 test('History shows committed USER and CHATGPT after reboot without another ACK',()=>{
  const m=machine({files:completedFiles('Pergunta anterior','Resposta anterior')});m.boot();
  m.setEditor('editor preservado');const before=new Map(m.files),writes=m.fsCalls.filter(c=>c.fn===0x26).length;
- const live=Buffer.from(m.mem.slice(0x4050,0x45f0));m.press(25);
+ const live=Buffer.from(m.mem.slice(0x4450,0x49f0));m.press(25);
  assert.equal(m.mem[symbols.history_active],1);assert.equal(m.get16(symbols.history_id),1);
  assert.ok(viewText(m).includes('[USER]'));assert.ok(viewText(m).includes('Pergunta anterior'));
  assert.ok(viewText(m).includes('[CHATGPT / RESPOSTA LOCAL]'));assert.ok(viewText(m).includes('Resposta anterior'));
@@ -631,7 +683,7 @@ test('History shows committed USER and CHATGPT after reboot without another ACK'
  savePNG(m.vram,'PREVIA-HISTORICO.png');
  assert.equal(m.fsCalls.filter(c=>c.fn===0x26).length,writes);assert.deepEqual(m.files,before);
  m.press(27);assert.ok(!m.exited);assert.equal(m.mem[symbols.history_active],0);
- assert.deepEqual(Buffer.from(m.mem.slice(0x4050,0x45f0)),live);
+ assert.deepEqual(Buffer.from(m.mem.slice(0x4450,0x49f0)),live);
  assert.equal(m.text().toString(),'editor preservado');m.exit();
 });
 test('History question recall only replaces an empty editor and is not sent',()=>{
@@ -937,5 +989,67 @@ test('80-column font spacing, confusables, accents and 4:3 reading sample',()=>{
  savePNG(m.vram,'PREVIA-LEITURA.png',3,true);m.exit();
 });
 
+function assertEditorImage(m){
+ const lines=[Array(80).fill(32)];let row=0,col=0,wrapped=false,cursor=null;const data=m.text();
+ for(let i=0;i<=data.length;i++){
+  if(i===m.get16(symbols.editor_cursor))cursor={row,col};
+  if(i===data.length)break;
+  const ch=data[i];
+  if(ch===10){if(wrapped){wrapped=false;continue;}row++;col=0;lines[row]??=Array(80).fill(32);}
+  else{wrapped=false;lines[row][col]=ch;if(++col===80){col=0;row++;wrapped=true;lines[row]??=Array(80).fill(32);}}
+ }
+ assert.equal(m.get16(symbols.cursor_row),cursor.row);assert.equal(m.mem[symbols.cursor_col],cursor.col);
+ const top=m.get16(symbols.view_top);
+ for(let r=0;r<3;r++){
+  const expected=lines[top+r]||Array(80).fill(32);assert.deepEqual([...m.row(20+r)],expected,'Editor visual row '+r);
+  for(let c=0;c<80;c++)for(let y=0;y<8;y++)for(let x=0;x<6;x++){
+   let bits=font[expected[c]*8+y];if(m.mem[symbols.cursor_phase]&&m.mem[symbols.cursor_screen_row]===20+r&&m.mem[symbols.cursor_col]===c)bits^=252;
+   const color=m.mem[0x5820+20+r],want=(bits>>(7-x)&1)?color>>4:color&15,sx=16+c*6+x,packed=m.vram[((20+r)*8+y)*256+(sx>>1)],actual=sx&1?packed&15:packed>>4;
+   assert.equal(actual,want,'Pixel row='+r+' cell='+c+' x='+x+' y='+y);
+  }
+ }
+}
+test('VDP pixels agree with independent editor layout through insert/delete/scroll/LF',()=>{
+ const m=machine();m.boot();
+ for(const [text,cursor,keys] of [
+  ['ABCDE'.repeat(70),120,[67,68,13,69,29,8,127,30,31]],
+  ['A'.repeat(239),239,[66,67,13,68,8,29,127]],
+  ['primeira\nsegunda\nterceira\nquarta',10,[65,13,66,8,127,30,31]],
+  ['X'.repeat(80)+'\n'+('YZ'.repeat(100)),80,[13,65,8,29,127]]
+ ]){m.setEditor(text,cursor);assertEditorImage(m);for(const key of keys){m.press(key);assertEditorImage(m);}}
+ m.exit();
+});
+test('DOS physical font/name tables survive save/load/network and repeated enter/leave',()=>{
+ for(const regs of [[0,0x70,0,0,1,0x36,7,0xf1],[4,0x70,3,0,1,0x36,7,0xf1]]){
+  const m=machine({regs,network:{},cmd:' 192.168.1.10 8080'});m.boot();
+  m.setEditor('DOS intacto');for(const key of [19,4,17,23])m.press(key);m.exit();
+  assert.ok(m.commands.filter(c=>c.mode===6&&c.nx===256&&c.ny===128).length>=4);
+ }
+});
+test('VDP ports come from BIOS and command/status transactions are interrupt-safe',()=>{
+ const m=machine({vdpReadPort:0x88,vdpWritePort:0x88});m.boot();m.press(65);assertEditorImage(m);m.exit();
+});
+const performanceCases=[
+ ['empty','',0,65],['append 1900 bytes','A'.repeat(1900),1900,66],
+ ['middle 1920 bytes','ABCD'.repeat(480),1000,67],
+ ['scroll at column 80',Array.from({length:239},(_,i)=>String.fromCharCode(65+i%26)).join(''),239,68],
+ ['Enter 1900 bytes','A'.repeat(1900),1900,13],['left 1900 bytes','A'.repeat(1900),1900,29],
+ ['Backspace 1900 bytes','A'.repeat(1900),1900,8],['Delete 1920 bytes','ABCD'.repeat(480),1000,127],
+ ['reject full buffer','A'.repeat(2047),2047,88]
+];
+for(const [label,text,cursor,key] of performanceCases)test('Performance under 100ms: '+label,()=>{
+ const m=machine();m.boot();m.setEditor(text,cursor);const before=m.tstates;m.press(key);
+ const modeledMs=(m.tstates-before)/3579545*1000,withInterruptAllowanceMs=modeledMs+20;
+ assertEditorImage(m);assert.ok(withInterruptAllowanceMs<=100,label+' '+withInterruptAllowanceMs.toFixed(2)+'ms');m.exit();
+ return {modeledMs,interruptAllowanceMs:20,budgetMs:100,cpuHz:3579545,scope:'Z80 cycles + modeled VDP/BIOS; physical measurement pending'};
+});
+test('Performance under 100ms: cursor blink',()=>{
+ const m=machine();m.boot();m.put16(0xfc9e,m.get16(symbols.blink_tick)+31);
+ const before=m.tstates;m.call('cursor_tick');m.call('render_dirty');const modeledMs=(m.tstates-before)/3579545*1000;
+ assert.ok(modeledMs+20<=100);assertEditorImage(m);m.exit();return {modeledMs,interruptAllowanceMs:20,budgetMs:100};
+});
+
 fs.writeFileSync(path.join(base,startupOnly?'STARTUP-RESULTS.json':'TEST-RESULTS.json'),JSON.stringify({binarySha256:require('node:crypto').createHash('sha256').update(binary).digest('hex'),scope:'Real COM on Z80 CPU; simulated DOS FCB, BIOS, VRAM and TCP/IP UNAPI; no physical MSX2 or full MSX emulator',results},null,2));
+if(!startupOnly)fs.writeFileSync(path.join(base,'PERFORMANCE-RESULTS.json'),JSON.stringify({version:'0.7.2',binarySha256:require('node:crypto').createHash('sha256').update(binary).digest('hex'),assumptions:{cpuHz:3579545,opcodeWaitT:2,biosDispatchT:1600,cpuVramByteT:64,hmmmByteT:16,hmmvByteT:8,lmmvPixelT:32,interruptAllowanceMs:20,overlap:'VDP command engine runs alongside CPU; S#2 CE polled to completion'},results:results.filter(r=>r.test.startsWith('Performance'))},null,2));
+
 console.log(JSON.stringify({passed:results.length,total:results.length,scope:'CPU/BIOS simulation'},null,2));

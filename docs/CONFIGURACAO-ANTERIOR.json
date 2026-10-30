@@ -29,7 +29,7 @@
     "mainRAM": "Mapper 2 MB ou 4 MB, conforme revisão/firmware; não medido"
   },
   "displayRevision": {
-    "version": "0.7.1",
+    "version": "0.7.2",
     "columns": 80,
     "rows": 24,
     "cellPixels": [
@@ -42,7 +42,8 @@
     ],
     "screen": 7,
     "selection": "SCREEN 7 retained after 4:3 preview inspection; BIOS R1 bit7 check corrected",
-    "physicalValidation": "RETEST_PENDING"
+    "physicalValidation": "RETEST_PENDING",
+    "renderer": "VDP HMMM glyph atlas with incremental cells"
   },
   "previousDisplayRevision": {
     "requested": "Melhorar legibilidade, reduzir colunas e regenerar o projeto",

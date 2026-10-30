@@ -1,0 +1,106 @@
+{
+  "version": "0.7.2",
+  "binarySha256": "5a70a500b469ea30906065be0231131c4b5f707c0e808ebabbc8152700ffe9d2",
+  "assumptions": {
+    "cpuHz": 3579545,
+    "opcodeWaitT": 2,
+    "biosDispatchT": 1600,
+    "cpuVramByteT": 64,
+    "hmmmByteT": 16,
+    "hmmvByteT": 8,
+    "lmmvPixelT": 32,
+    "interruptAllowanceMs": 20,
+    "allowanceCovers": "presentation frame and BIOS interrupts",
+    "overlap": "VDP command engine runs alongside CPU; S#2 CE polled to completion"
+  },
+  "results": [
+    {
+      "test": "Performance under 100ms: empty",
+      "status": "PASS",
+      "modeledMs": 33.56935029452067,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: append 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 33.57689315262135,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: middle 1920 bytes",
+      "status": "PASS",
+      "modeledMs": 69.5247580348899,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: scroll at column 80",
+      "status": "PASS",
+      "modeledMs": 75.26124130301477,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: Enter 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 74.15272052732959,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: left 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 46.00333282582004,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: Backspace 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 60.38253465175043,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: Delete 1920 bytes",
+      "status": "PASS",
+      "modeledMs": 76.70304466070408,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: reject full buffer",
+      "status": "PASS",
+      "modeledMs": 51.010114413982784,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: cursor blink",
+      "status": "PASS",
+      "modeledMs": 15.016992383110145,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100
+    }
+  ]
+}

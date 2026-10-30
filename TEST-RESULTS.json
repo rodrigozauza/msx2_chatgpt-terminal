@@ -1,5 +1,5 @@
 {
-  "binarySha256": "ab6b357c5a8cee94a82f0512c002b4f1abcdc0c9530305ef1c1d7f17c3e7046a",
+  "binarySha256": "5a70a500b469ea30906065be0231131c4b5f707c0e808ebabbc8152700ffe9d2",
   "scope": "Real COM on Z80 CPU; simulated DOS FCB, BIOS, VRAM and TCP/IP UNAPI; no physical MSX2 or full MSX emulator",
   "results": [
     {
@@ -117,9 +117,9 @@
     {
       "test": "COM format, font size and full eight-pixel glyphs",
       "status": "PASS",
-      "comBytes": 14935,
+      "comBytes": 16798,
       "entry": 256,
-      "end": 15191
+      "end": 17054
     },
     {
       "test": "SCREEN7 bitmap, 80 columns, 16 colors, all scanlines and page boundaries",
@@ -178,7 +178,7 @@
       "status": "PASS"
     },
     {
-      "test": "Dirty rows redraw bitmap; blinking redraws one row",
+      "test": "Dirty cells use cached VDP glyphs; blink copies at most two cells",
       "status": "PASS"
     },
     {
@@ -228,22 +228,22 @@
     {
       "test": "Exact full video/BIOS restoration from initial mode 0",
       "status": "PASS",
-      "cpuInstructions": 2888363
+      "cpuInstructions": 2965145
     },
     {
       "test": "Exact full video/BIOS restoration from initial mode 1",
       "status": "PASS",
-      "cpuInstructions": 2888363
+      "cpuInstructions": 2965145
     },
     {
       "test": "Exact full video/BIOS restoration from initial mode 2",
       "status": "PASS",
-      "cpuInstructions": 2888363
+      "cpuInstructions": 2965145
     },
     {
       "test": "Exact full video/BIOS restoration from initial mode 3",
       "status": "PASS",
-      "cpuInstructions": 2888363
+      "cpuInstructions": 2965145
     },
     {
       "test": "FCB draft create/write/readback/close/rename and Unicode escaping",
@@ -852,6 +852,106 @@
     {
       "test": "80-column font spacing, confusables, accents and 4:3 reading sample",
       "status": "PASS"
+    },
+    {
+      "test": "VDP pixels agree with independent editor layout through insert/delete/scroll/LF",
+      "status": "PASS"
+    },
+    {
+      "test": "DOS physical font/name tables survive save/load/network and repeated enter/leave",
+      "status": "PASS"
+    },
+    {
+      "test": "VDP ports come from BIOS and command/status transactions are interrupt-safe",
+      "status": "PASS"
+    },
+    {
+      "test": "Performance under 100ms: empty",
+      "status": "PASS",
+      "modeledMs": 33.56935029452067,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: append 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 33.57689315262135,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: middle 1920 bytes",
+      "status": "PASS",
+      "modeledMs": 69.5247580348899,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: scroll at column 80",
+      "status": "PASS",
+      "modeledMs": 75.26124130301477,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: Enter 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 74.15272052732959,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: left 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 46.00333282582004,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: Backspace 1900 bytes",
+      "status": "PASS",
+      "modeledMs": 60.38253465175043,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: Delete 1920 bytes",
+      "status": "PASS",
+      "modeledMs": 76.70304466070408,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: reject full buffer",
+      "status": "PASS",
+      "modeledMs": 51.010114413982784,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100,
+      "cpuHz": 3579545,
+      "scope": "Z80 cycles + modeled VDP/BIOS; physical measurement pending"
+    },
+    {
+      "test": "Performance under 100ms: cursor blink",
+      "status": "PASS",
+      "modeledMs": 15.016992383110145,
+      "interruptAllowanceMs": 20,
+      "budgetMs": 100
     }
   ]
 }

@@ -1,5 +1,6 @@
 {
-  "binarySha256": "ab6b357c5a8cee94a82f0512c002b4f1abcdc0c9530305ef1c1d7f17c3e7046a",
+  "binarySha256": "5a70a500b469ea30906065be0231131c4b5f707c0e808ebabbc8152700ffe9d2",
+  "scope": "Real COM on Z80 CPU; simulated DOS FCB, BIOS, VRAM and TCP/IP UNAPI; no physical MSX2 or full MSX emulator",
   "results": [
     {
       "test": "VRAM startup generation=1 MODE=4",

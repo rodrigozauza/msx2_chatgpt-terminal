@@ -2,9 +2,10 @@
 ; Rendering only; NETWORK handles transport. No model response is generated here.
 
 put_line:
+    call mark_row
+put_line_unmarked:
     ld (line_row),a
     ld (line_source),hl
-    call mark_row
     call grid_row_address
     ld (line_dest),hl
     ld bc,GRID_STRIDE

@@ -1,8 +1,8 @@
 # Terminal ChatGPT para MSX2 — SCREEN 7, 80 colunas
 
-Revisão **0.7.1** — [baixar versão publicada](https://github.com/rodrigozauza/msx2_chatgpt-terminal/releases/latest).
+Revisão **0.7.2** — [baixar versão publicada](https://github.com/rodrigozauza/msx2_chatgpt-terminal/releases/latest).
 
-Corrige a recusa indevida de BIOS MSX2 com R#1=70h: o bit 7 de R#1 é reservado no V9938, não uma indicação de capacidade de VRAM. Veja [notas da versão](RELEASE-NOTES.md).
+Corrige a lentidão na digitação/cursor e a corrupção da fonte do DOS ao sair com Esc. Usa atlas de glifos e cópias do V9938, preservando SCREEN 7 de 80 colunas. Mantém a correção anterior de R#1. Veja [notas da versão](RELEASE-NOTES.md) e [análise da renderização e do DOS](docs/CORRECAO-RENDER-DOS.md).
 
  Terminal de **80 colunas × 24 linhas**, em SCREEN 7 (512 × 212), com células de **6 × 8 pixels** e margens laterais de 16 pixels.
 
@@ -10,7 +10,7 @@ A fonte original desta revisão tem cinco pixels de desenho e uma coluna de sepa
 
 ## Instalar
 
-1. Faça backup dos dados do SD.
+1. Reinicie o MSX antes do primeiro teste, para recarregar a fonte do DOS caso a versão anterior a tenha corrompido. Faça backup dos dados do SD.
 2. Substitua o executável anterior pelo novo **MSX_CHAT.COM**. **MSXCHAT.COM** tem conteúdo idêntico e pode ser usado com o nome anterior.
 3. Inicie pelo console habitual do DOS (modo de vídeo 0 a 3) e use o mesmo IP e porta do gateway:
 

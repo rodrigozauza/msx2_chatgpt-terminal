@@ -10,3 +10,5 @@ Verificar frequencia e fonte,Monitor real,PENDENTE,Ctrl+R para calibracao
 Legibilidade em 80 colunas,SM-X monitor real,PENDENTE,Conferir células 6x8; distinguir O/0 I/l/1 e verificar linha completa e acentos
 Inicializar com R1=70h,MSX2 fisico,PENDENTE,Nao deve aparecer a exigencia 16K VRAM addressing
 Retorno de gravacao e rede,MSX2 fisico,PENDENTE,Reabrir SCREEN7 e restaurar DOS com Esc
+Latencia de digitar ate 100ms,MSX2 fisico,PENDENTE,Medir versao 0.7.2 com buffer curto longo insercao e rolagem
+Fonte DOS apos Esc,MSX2 fisico,PENDENTE,Reiniciar antes do teste e conferir apos gravacao e rede

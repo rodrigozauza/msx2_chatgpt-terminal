@@ -1,13 +1,17 @@
-# Validação — v0.7.1
+# Validação — v0.7.2
 
-211 testes do executável Z80, 37 do gateway, 18 do servidor LAN, 12 do publicador e 16 de backup: total esperado 294. Consulte os relatórios JSON e RELEASE.json para o resultado gerado pelo empacotamento, que exige todos PASS e o hash do COM testado.
+224 testes do COM real sobre CPU Z80 e modelo de BIOS/VDP/DOS/UNAPI; 37 gateway, 18 LAN, 12 publicador e 16 backup: total 307 PASS.
 
-A regressão de inicialização usa estados R#1 com bit 7 desligado (10h/30h/50h/70h/60h/68h), MSX2/MSX2+, modos de console 40/80 colunas, SD e rede. Mantém um estado legado F0h e verifica restauração exata do console. Os valores escritos pelo aplicativo em SCREEN 7 não ligam o bit reservado.
+## Latência
 
-A suíte também verifica bitmap, coluna 80, fonte e acentos, cursor, editor de 2047 bytes, rolagem, histórico, JSON/UTF-8 inválido, journal, cancelamento, falhas de disco, HTTP 202, timeout e recuperação. Os asserts do montador verificam o mapa de buffers. Gateway inclui a regressão para instruções de 80 colunas.
+PERFORMANCE-RESULTS.json contém dez cenários: eco em editor vazio, fim de texto longo, inserção no meio, rolagem na coluna 80, Enter, esquerda, Backspace, Delete, rejeição de buffer cheio e piscar. CPU de 3.579.545 Hz, 2T adicionais por instrução, 1600T por despacho BIOS, 64T por byte de transferência BIOS, HMMM 16T/byte, HMMV 8T/byte e LMMV XOR 32T/pixel. CPU e VDP avançam em paralelo; S#2 CE é consultado até a conclusão. Cada cenário recebe mais 20 ms de margem para apresentação de quadro/interrupções e deve ficar em até 100 ms.
 
-O COM real é executado sobre a CPU Z80 incluída, com BIOS, VRAM, DOS e TCP/IP UNAPI simulados. Testes PC usam fixtures locais. Sem chamada paga/autenticada à API; sem emulador MSX completo; sem teste físico. A nova versão precisa ser revalidada no equipamento que apresentou o erro. As prévias são reconstruções da VRAM simulada.
+Valores locais: digitação simples ~34 ms; inserção longa ~70 ms; rolagem ~75 ms; Enter ~74 ms; Backspace ~60 ms; Delete ~77 ms; cursor ~15 ms. São estimativas em ciclos, não medidas no MSX físico. O limite é validado nos cenários cobertos; firmware, waits e outras interrupções do equipamento ainda precisam ser medidos. Rede/disco e preparação inicial da atlas têm seus próprios tempos.
 
-O teste antigo que esperava rejeitar R#1=70h estava incorreto e foi substituído por testes de inicialização bem-sucedida. A análise detalhada está em docs/CORRECAO-BIOS-R1.md.
+## Vídeo e DOS
 
-Publicador e backup precisaram de repetição fora da sandbox do Windows por bloqueio de operações em pastas temporárias. O workflow publica somente depois de recompilar, executar as cinco suítes, conferir SHA256SUMS.txt e verificar o ZIP.
+O modelo agora separa VRAM física e endereços entrelaçados de SCREEN 7. A versão 0.7.1 falha no teste de restauração física; a nova preserva exatamente os 16 KB físicos do console em modos TEXT1/TEXT2, inclusive após gravar, ler e usar a rede. Atlas, cópias sobrepostas em ambos sentidos, preenchimento e XOR do cursor são verificados por um oráculo independente de layout/pixels.
+
+Também há testes de portas VDP obtidas da BIOS em base 88h, latch de controle com interrupções desabilitadas, retorno a S#0 antes de EI e espera de conclusão de comandos. A correção anterior do bit reservado R#1 permanece.
+
+Sem emulador MSX completo, teste físico da v0.7.2 ou chamada paga/autenticada à API. Publicador e backup usaram execução fora da sandbox após bloqueios de arquivos temporários já conhecidos. O GitHub Actions recompila e repete as cinco suítes antes de gerar a release.

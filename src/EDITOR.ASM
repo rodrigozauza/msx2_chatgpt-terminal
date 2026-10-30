@@ -2,6 +2,17 @@
 ; Newlines are LF internally. Display wraps at exactly 80 cells.
 editor_insert:
     ld (insert_value),a
+    xor a
+    ld (shift_left),a
+    ld hl,(editor_length)
+    ld de,(editor_cursor)
+    or a
+    sbc hl,de
+    ld a,0
+    jr nz,editor_append_tested
+    inc a
+editor_append_tested:
+    ld (append_mode),a
     ld hl,(editor_length)
     ld de,EDITOR_MAX
     or a
@@ -34,11 +45,130 @@ editor_insert:
     ld (editor_cursor),hl
     xor a
     ld (buffer_full),a
-    jp editor_update
+    ; Reflow only from the insertion point to the bottom of the viewport.
+    ; The already-known cursor layout avoids scanning the preceding 2KB.
+    call mark_cursor_row
+    ld hl,(cursor_row)
+    ld (layout_row),hl
+    ld a,(cursor_col)
+    ld (layout_col),a
+    ld a,(cursor_wrapped)
+    ld (layout_wrapped),a
+    ld hl,(editor_cursor)
+    dec hl
+    ld de,EDITOR
+    add hl,de
+    ld (fast_source),hl
+    ld a,(insert_value)
+    cp 10
+    jr nz,editor_fast_regular
+    ld a,(cursor_wrapped)
+    or a
+    jr z,editor_fast_newline
+    xor a
+    ld (cursor_wrapped),a
+    jr editor_fast_reflow
+editor_fast_regular:
+    ld a,(cursor_col)
+    inc a
+    cp COLUMNS
+    jr c,editor_fast_column
+    ld a,1
+    ld (cursor_wrapped),a
+    jr editor_fast_wrap
+editor_fast_newline:
+    xor a
+    ld (cursor_wrapped),a
+editor_fast_wrap:
+    xor a
+    ld (cursor_col),a
+    ld hl,(cursor_row)
+    inc hl
+    ld (cursor_row),hl
+    ld a,(cursor_screen_row)
+    cp INPUT_ROW+INPUT_ROWS-1
+    jr c,editor_fast_next_row
+    ld hl,(view_top)
+    inc hl
+    ld (view_top),hl
+    call vdp_scroll_editor
+    jr editor_fast_reflow
+editor_fast_next_row:
+    inc a
+    ld (cursor_screen_row),a
+    jr editor_fast_reflow
+editor_fast_column:
+    ld (cursor_col),a
+    xor a
+    ld (cursor_wrapped),a
+editor_fast_reflow:
+    ld a,(append_mode)
+    or a
+    jp nz,editor_append_draw
+    ld hl,(layout_row)
+    ld de,(view_top)
+    or a
+    sbc hl,de
+    ld a,l
+    add a,INPUT_ROW
+    ld (fast_start_row),a
+    call grid_row_address
+    ld a,(layout_col)
+    ld (fast_start_col),a
+    ld e,a
+    ld d,0
+    add hl,de
+    push hl
+    ld de,INPUT_BASE+INPUT_ROWS*GRID_STRIDE
+    ex de,hl
+    or a
+    sbc hl,de
+    ld b,h
+    ld c,l
+    pop hl
+    ld a,32
+    call fill_memory
+    ld hl,(fast_source)
+editor_fast_draw:
+    ld a,(hl)
+    or a
+    jr z,editor_fast_done
+    ld (draw_value),a
+    push hl
+    cp 10
+    call nz,editor_place_visible
+    ld a,(draw_value)
+    call advance_layout
+    ld hl,(layout_row)
+    ld de,(view_top)
+    or a
+    sbc hl,de
+    ld a,l
+    cp INPUT_ROWS
+    pop hl
+    jr nc,editor_fast_done
+    inc hl
+    jr editor_fast_draw
+editor_fast_done:
+    ld a,(insert_value)
+    cp 10
+    call nz,vdp_shift_editor
+    ld a,INPUT_ROW
+    call mark_pattern_row
+    inc a
+    call mark_pattern_row
+    inc a
+    call mark_pattern_row
+    ld a,1
+    ld (cursor_phase),a
+    ld hl,(JIFFY)
+    ld (blink_tick),hl
+    call mark_cursor_row
+    jp draw_status
 editor_full:
     ld a,1
     ld (buffer_full),a
-    jp editor_update
+    jp draw_status
 editor_backspace:
     ld hl,(editor_cursor)
     ld a,h
@@ -71,7 +201,7 @@ editor_delete:
     ld (editor_length),hl
     xor a
     ld (buffer_full),a
-    jp editor_update
+    jp editor_delete_redraw
 editor_clear:
     xor a
     ld (EDITOR),a
@@ -88,7 +218,7 @@ editor_left:
     ret z
     dec hl
     ld (editor_cursor),hl
-    jp editor_update
+    jp editor_move_update
 editor_right:
     ld hl,(editor_length)
     ld de,(editor_cursor)
@@ -97,7 +227,7 @@ editor_right:
     ret z
     inc de
     ld (editor_cursor),de
-    jp editor_update
+    jp editor_move_update
 editor_home:
     ld hl,(editor_cursor)
     ld de,EDITOR
@@ -138,7 +268,6 @@ editor_end_done:
     ld (editor_cursor),hl
     jp editor_update
 editor_up:
-    call get_cursor_layout
     ld hl,(cursor_row)
     ld a,h
     or l
@@ -147,7 +276,6 @@ editor_up:
     ld (target_row),hl
     jp editor_vertical
 editor_down:
-    call get_cursor_layout
     ld hl,(cursor_row)
     inc hl
     ld (target_row),hl
@@ -155,7 +283,7 @@ editor_vertical:
     ld a,(cursor_col)
     ld (target_col),a
     call find_visual_position
-    jp editor_update
+    jp editor_move_update
 
 layout_reset:
     push hl
@@ -198,67 +326,167 @@ layout_newline:
     pop hl
     ret
 get_cursor_layout:
-    call layout_reset
+    ld hl,0
+    ld (cursor_row),hl
     ld hl,EDITOR
     ld bc,(editor_cursor)
-cursor_layout_loop:
+layout_scan_segment:
     ld a,b
     or c
-    jp z,cursor_layout_done
-    ld a,(hl)
-    call advance_layout
+    jr z,layout_scan_empty
+    ld (scan_remaining),bc
+    ld a,10
+    cpir
+    ld (scan_pointer),hl
+    ld a,0
+    jr nz,layout_scan_no_lf
+    inc a
+layout_scan_no_lf:
+    ld (scan_lf),a
+    ld hl,(scan_remaining)
+    or a
+    sbc hl,bc
+    or a
+    jr z,layout_scan_divide
+    dec hl
+layout_scan_divide:
+    ld a,h
+    or l
+    ld (scan_nonempty),a
+    ld de,COLUMNS
+layout_scan_quotient:
+    or a
+    sbc hl,de
+    jr c,layout_scan_remainder
+    push hl
+    ld hl,(cursor_row)
     inc hl
-    dec bc
-    jp cursor_layout_loop
-cursor_layout_done:
-    ld hl,(layout_row)
     ld (cursor_row),hl
-    ld a,(layout_col)
+    pop hl
+    jr layout_scan_quotient
+layout_scan_remainder:
+    add hl,de
+    ld a,(scan_lf)
+    or a
+    jr z,layout_scan_last
+    ld a,l
+    or a
+    jr nz,layout_scan_row_end
+    ld a,(scan_nonempty)
+    or a
+    jr nz,layout_scan_continue
+layout_scan_row_end:
+    ld hl,(cursor_row)
+    inc hl
+    ld (cursor_row),hl
+layout_scan_continue:
+    ld hl,(scan_pointer)
+    jp layout_scan_segment
+layout_scan_empty:
+    ld l,0
+    xor a
+    ld (scan_nonempty),a
+layout_scan_last:
+    ld a,l
     ld (cursor_col),a
+    ld (layout_col),a
+    or a
+    ld a,0
+    jr nz,layout_scan_store
+    ld a,(scan_nonempty)
+    or a
+    ld a,0
+    jr z,layout_scan_store
+    inc a
+layout_scan_store:
+    ld (cursor_wrapped),a
+    ld (layout_wrapped),a
+    ld hl,(cursor_row)
+    ld (layout_row),hl
     ret
 
 ; Search all valid cursor positions and clamp to the target visual row/column.
 find_visual_position:
-    ld hl,(editor_cursor)
-    ld (best_position),hl
-    call layout_reset
-    ld bc,0
-    ld hl,EDITOR
-find_visual_loop:
+    ld hl,(view_top)
     push hl
-    ld hl,(layout_row)
-    ld de,(target_row)
+    ld hl,(target_row)
+    ld (view_top),hl
+    call find_view_start
+    pop de
+    ld (view_top),de
+    ld de,(skip_rows)
+    ld a,d
+    or e
+    ret nz
+    ld a,(target_col)
+    ld b,a
+    or a
+    jr z,find_visual_accept
+find_visual_column:
+    ld a,(hl)
+    or a
+    jr z,find_visual_accept
+    cp 10
+    jr z,find_visual_accept
+    inc hl
+    djnz find_visual_column
+find_visual_accept:
+    ld de,EDITOR
     or a
     sbc hl,de
-    pop hl
-    jp c,find_visual_next
-    jp nz,find_visual_done
-    ld a,(target_col)
-    ld e,a
-    ld a,(layout_col)
-    cp e
-    jp c,find_visual_accept
-    jp nz,find_visual_done
-find_visual_accept:
-    ld (best_position),bc
-find_visual_next:
-    ld de,(editor_length)
-    ld a,b
-    cp d
-    jp nz,find_visual_advance
-    ld a,c
-    cp e
-    jp z,find_visual_done
-find_visual_advance:
-    ld a,(hl)
-    call advance_layout
-    inc hl
-    inc bc
-    jp find_visual_loop
-find_visual_done:
-    ld hl,(best_position)
     ld (editor_cursor),hl
     ret
+editor_move_update:
+    call mark_cursor_row
+    call get_cursor_layout
+    ld hl,(cursor_row)
+    ld de,(view_top)
+    or a
+    sbc hl,de
+    jp c,editor_update
+    ld a,h
+    or a
+    jp nz,editor_update
+    ld a,l
+    cp INPUT_ROWS
+    jp nc,editor_update
+    add a,INPUT_ROW
+    ld (cursor_screen_row),a
+    jp editor_cursor_ready
+editor_delete_redraw:
+    xor a
+    ld (append_mode),a
+    call mark_cursor_row
+    call get_cursor_layout
+    ld hl,(cursor_row)
+    ld de,(view_top)
+    or a
+    sbc hl,de
+    jp c,editor_update
+    ld a,h
+    or a
+    jp nz,editor_update
+    ld a,l
+    cp INPUT_ROWS
+    jp nc,editor_update
+    add a,INPUT_ROW
+    ld (cursor_screen_row),a
+    ld hl,(editor_cursor)
+    ld de,EDITOR
+    add hl,de
+    ld (fast_source),hl
+    ld a,1
+    ld (shift_left),a
+    ld a,255
+    ld (insert_value),a
+    jp editor_fast_reflow
+editor_cursor_ready:
+    ld a,1
+    ld (cursor_phase),a
+    ld hl,(JIFFY)
+    ld (blink_tick),hl
+    call mark_cursor_row
+    jp draw_status
 
 editor_update:
     call mark_cursor_row
@@ -301,10 +529,17 @@ view_ready:
     ld bc,INPUT_ROWS*GRID_STRIDE
     ld a,32
     call fill_memory
-    call layout_reset
-    ld hl,EDITOR
-    ld bc,(editor_length)
+    call find_view_start
 editor_draw_loop:
+    push hl
+    ld hl,(layout_row)
+    ld de,(view_top)
+    or a
+    sbc hl,de
+    ld a,l
+    cp INPUT_ROWS
+    pop hl
+    jp nc,editor_draw_done
     ld a,b
     or c
     jp z,editor_draw_done
@@ -377,7 +612,8 @@ editor_place_visible:
 draw_status:
     ld a,STATUS_ROW
     ld hl,status_template
-    call put_line
+    call mark_pattern_row
+    call put_line_unmarked
     ld hl,GRID+STATUS_ROW*GRID_STRIDE+2
     ld de,(editor_length)
     call hex_at
@@ -440,3 +676,97 @@ buffer_full: db 0
 input_row_changed: db 0
 status_template: dm "T=0000 P=0000 L=0000 C=00"
     db 0
+
+append_mode: db 0
+
+fast_source: dw 0
+
+cursor_wrapped: db 0
+
+fast_start_row: db INPUT_ROW
+fast_start_col: db 0
+
+; Find the viewport by scanning at most 80 bytes per visual row with CPIR.
+find_view_start:
+    ld hl,(view_top)
+    ld (skip_rows),hl
+    ld (layout_row),hl
+    xor a
+    ld (layout_col),a
+    ld (layout_wrapped),a
+    ld hl,(editor_length)
+    ld (skip_remaining),hl
+    ld hl,EDITOR
+find_view_row:
+    ld de,(skip_rows)
+    ld a,d
+    or e
+    jr z,find_view_done
+    ld bc,(skip_remaining)
+    ld a,b
+    or c
+    jr z,find_view_done
+    ld a,b
+    or a
+    jr nz,find_view_80
+    ld a,c
+    cp COLUMNS
+    jr c,find_view_count
+find_view_80:
+    ld bc,COLUMNS
+find_view_count:
+    ld (scan_remaining),bc
+    ld a,10
+    cpir
+    push af
+    push hl
+    ld hl,(scan_remaining)
+    or a
+    sbc hl,bc
+    ld d,h
+    ld e,l
+    ld hl,(skip_remaining)
+    or a
+    sbc hl,de
+    ld (skip_remaining),hl
+    pop hl
+    pop af
+    jr z,find_view_consumed
+    ld a,(hl)
+    cp 10
+    jr nz,find_view_consumed
+    inc hl
+    ld de,(skip_remaining)
+    dec de
+    ld (skip_remaining),de
+find_view_consumed:
+    ld de,(skip_rows)
+    dec de
+    ld (skip_rows),de
+    jr find_view_row
+find_view_done:
+    ld bc,(skip_remaining)
+    ret
+scan_remaining: dw 0
+scan_pointer: dw 0
+scan_lf: db 0
+scan_nonempty: db 0
+skip_rows: dw 0
+skip_remaining: dw 0
+
+shift_left: db 0
+
+editor_append_draw:
+    ld hl,(layout_row)
+    ld de,(view_top)
+    or a
+    sbc hl,de
+    ld a,l
+    add a,INPUT_ROW
+    call mark_pattern_row
+    ld a,(insert_value)
+    cp 10
+    jp z,editor_cursor_ready
+    ld (draw_value),a
+    call editor_place_visible
+    jp editor_cursor_ready

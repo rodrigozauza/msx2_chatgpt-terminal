@@ -162,4 +162,4 @@ initial_sp: dw 0
     include "HTTP.ASM"
     include "FONT8X8.ASM"
 program_end:
-    assert program_end < &4000
+    assert program_end < &4400

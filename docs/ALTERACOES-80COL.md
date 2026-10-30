@@ -1,3 +1,5 @@
+> Histórico da revisão 0.7. O renderizador e o mapa de RAM atuais estão em [CORRECAO-RENDER-DOS.md](CORRECAO-RENDER-DOS.md).
+
 # Revisão 80 colunas
 
 SCREEN 7, 80×24, célula 6×8 e margens de 16 pixels. O V9938 usa 3 bytes por caractere por raster; cada nibble representa um pixel independente. Não há duplicação horizontal. Editor e histórico compartilham a quebra em 80; status=19, editor=20–22, rodapé=23. Histórico exibe 17 linhas por página.

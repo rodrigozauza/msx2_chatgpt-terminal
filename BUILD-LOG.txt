@@ -1,4 +1,4 @@
-Version 0.7.1
+Version 0.7.2
 Python build.py: PASS; COM aliases identical
-COM SHA256: ab6b357c5a8cee94a82f0512c002b4f1abcdc0c9530305ef1c1d7f17c3e7046a
-{"z80": 211, "gateway": 37, "lanServer": 18, "publisher": 12, "backup": 16}; total 294 PASS
+COM SHA256: 5a70a500b469ea30906065be0231131c4b5f707c0e808ebabbc8152700ffe9d2
+{"z80": 224, "gateway": 37, "lanServer": 18, "publisher": 12, "backup": 16}; total 307 PASS

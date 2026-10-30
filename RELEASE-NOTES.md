@@ -1,17 +1,21 @@
-# MSX2 ChatGPT v0.7.1 — SCREEN 7 / 80 colunas
+# MSX2 ChatGPT v0.7.2 — SCREEN 7 rápida e saída estável para DOS
 
-Corrige a interrupção na inicialização com a mensagem "BIOS must have 16K VRAM addressing enabled". A versão anterior interpretava o bit 7 de R#1 como requisito de VRAM. Esse bit é reservado no V9938/V9958; BIOS normais de MSX2 usam R#1=70h/60h/68h, com o bit desligado.
+Corrige dois problemas relatados no MSX físico: renderização de cada tecla acima de 900 ms e caracteres do prompt do DOS deformados após Esc.
 
-- Removida a checagem indevida; continuam as verificações de MSX2, 128 KB VRAM, TPA e modo inicial 0–3.
-- R#1 agora recebe 20h para apagar o vídeo e 60h para mostrar SCREEN 7, com bit reservado zero. Restauração preserva exatamente os registradores originais do DOS.
-- Testes usam estados reais de BIOS, incluindo consoles de 40/80 colunas, R#1 com bit 7 desligado, leitura/gravação no SD e ida/volta de operações de rede.
-- Instrução textual do gateway corrigida de 64 para 80 colunas.
-- Mantidos SCREEN 7 80×24, fonte incorporada 5×7/6×8, ObsoNET, TCP/IP UNAPI, SD Mapper e protocolo msxchat/1.
+## Causas e correções
 
-Validação: 211 testes Z80/BIOS/VDP/DOS/UNAPI simulados; 37 gateway; 18 LAN; 12 publicador; 16 backup. Total: 294. Não houve chamada paga/autenticada à API, emulador MSX completo ou teste físico; a revalidação no MSX real permanece pendente.
+A versão anterior reconstruía pixels de linhas inteiras para cada tecla, inclusive estado e cursor, e percorria novamente o texto de até 2047 bytes. Agora o V9938 copia glifos de uma atlas de cinco cores na VRAM, atualiza células alteradas e executa rolagem/deslocamento por HMMM. O editor faz reflow apenas da janela afetada; busca de linhas usa CPIR. A cache é preparada uma vez ao iniciar o COM.
+
+A cópia do DOS era lida em modo texto linear e devolvida enquanto SCREEN 7 usava VRAM entrelaçada. Agora os 16 KB físicos do console são guardados em VRAM reservada e restaurados usando SCREEN 5 linear, antes de recolocar os registradores e o modo do DOS. A interface continua integralmente em SCREEN 7; SCREEN 5 é usado somente em transições com vídeo oculto.
+
+## Validação
+
+224 testes Z80/BIOS/VDP/DOS/UNAPI e 83 verificações do PC: total 307. O modelo agora contempla bancos físicos da VRAM, atlas, HMMM/HMMV/XOR, portas reais obtidas da BIOS e seção crítica de status/comandos. Um oráculo independente verifica texto e pixels após inserção/exclusão/LF/rolagem.
+
+Dez cenários de latência passam no orçamento de 100 ms a 3,58 MHz, incluindo 20 ms de margem para apresentação de quadro/interrupções: digitação, texto longo, inserção no meio, rolagem, Enter, esquerda, Backspace, Delete, limite de buffer e piscar do cursor. Veja PERFORMANCE-RESULTS.json. São estimativas em ciclos com tempos de BIOS/VDP modelados; não são medições no seu MSX. A confirmação física permanece pendente.
 
 ## Instalação
 
-Extraia o ZIP. Copie MSX_CHAT.COM para o SD, substituindo o executável anterior. MSXCHAT.COM é um alias de conteúdo idêntico. A fonte já está incorporada; não é preciso copiar o restante para o MSX. Continue usando o mesmo IP, porta, pilha e gateway. Dados existentes não precisam de conversão. Se atualizar o gateway no PC, preserve sua pasta de estado e suas variáveis de ambiente.
+Reinicie o MSX antes do primeiro teste para recuperar uma fonte do DOS já corrompida pela versão anterior. Extraia o ZIP e substitua o MSX_CHAT.COM no SD. MSXCHAT.COM é um alias idêntico. Mesmos drivers ObsoNET/UNAPI, SD Mapper, IP, porta, gateway e dados salvos. Fonte incorporada; sem nova alocação de RAM mapper. Atualize o conjunto de fontes/ferramentas no PC se mantiver uma cópia do projeto.
 
-Referência: [Yamaha V9938 — Mode Registers](https://ftp.whtech.com/YAHOO%20group%20backups/GENEVE/FILES/v9938%20Application%20Manual.htm), R#1 bit 7 reservado.
+A inicialização pode levar mais tempo para preparar a atlas uma única vez; a meta de 100 ms se aplica à edição/renderização interativa, não às operações de rede ou disco.

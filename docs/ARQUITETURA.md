@@ -1,3 +1,7 @@
+# Atualização 0.7.2
+
+Renderização por atlas/HMMM, reflow limitado à janela e restauração linear dos 16 KB físicos do console. Ver CORRECAO-RENDER-DOS.md e ../PERFORMANCE-RESULTS.json. As seções seguintes conservam o histórico da arquitetura.
+
 # Arquitetura técnica — MSX2 v0.7.1
 
 Interface atual: SCREEN 7, 80×24, células 6×8. Inicialização aceita estados normais do V9938/V9958 com R#1 bit 7 desligado. Veja CORRECAO-BIOS-R1.md e ../VALIDACAO.md para a evidência desta revisão. As descrições e referências às fases anteriores abaixo são históricas do gateway.

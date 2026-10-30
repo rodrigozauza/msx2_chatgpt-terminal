@@ -11,14 +11,17 @@ def main():
     metadata=read('RELEASE.json')
     binary=(BASE/'MSXCHAT.COM').read_bytes()
     assert binary==(BASE/'MSX_CHAT.COM').read_bytes(),'COM aliases differ'
-    assert binary[:3]==bytes([0xc3,3,1]) and len(binary)+256<0x4000
+    assert binary[:3]==bytes([0xc3,3,1]) and len(binary)+256<0x4400
     reports={key:read(name) for key,name in {'z80':'TEST-RESULTS.json','gateway':'GATEWAY-RESULTS.json','lanServer':'LAN-SERVER-RESULTS.json','publisher':'HELPER-RESULTS.json','backup':'BACKUP-RESULTS.json'}.items()}
     assert reports['z80']['binarySha256']==sha(binary),'Tests do not match this COM'
+    perf=read('PERFORMANCE-RESULTS.json')
+    assert perf['binarySha256']==sha(binary),'Performance report does not match COM'
+    assert len(perf['results'])==10 and all(r['status']=='PASS' and r['modeledMs']+r['interruptAllowanceMs']<=r['budgetMs'] for r in perf['results'])
     counts={}
     for key,report in reports.items():
         assert report['results'] and all(r['status']=='PASS' for r in report['results']),key
         counts[key]=len(report['results'])
-    assert counts=={'z80':211,'gateway':37,'lanServer':18,'publisher':12,'backup':16},counts
+    assert counts=={'z80':224,'gateway':37,'lanServer':18,'publisher':12,'backup':16},counts
     metadata['binary']={'file':'MSXCHAT.COM','alias':'MSX_CHAT.COM','bytes':len(binary),'sha256':sha(binary),'entry':'0100h','endExclusive':format(len(binary)+256,'04X')+'h'}
     metadata['tests'].update(counts,currentRunTotal=sum(counts.values()))
     (BASE/'RELEASE.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

@@ -5,3 +5,4 @@ __pycache__/
 .env.*
 gateway-state/
 node_modules/
+msxchat-build-*/
