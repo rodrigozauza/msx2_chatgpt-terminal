@@ -1,0 +1,69 @@
+{
+  "scope": "Native PC filesystem, ZIP CRC/SHA256 and controlled failure injection",
+  "results": [
+    {
+      "test": "Lossless backup/verify/restore includes UTF8 draft and partial files without modifying source",
+      "status": "PASS"
+    },
+    {
+      "test": "Rotation keeps newest terminal groups and every pending request and ID marker",
+      "status": "PASS"
+    },
+    {
+      "test": "Cancelled requests and late unused RSP are archived losslessly",
+      "status": "PASS"
+    },
+    {
+      "test": "Acknowledged remote error can be rotated",
+      "status": "PASS"
+    },
+    {
+      "test": "Invalid metadata refuses rotation but allows forensic backup",
+      "status": "PASS"
+    },
+    {
+      "test": "ACK/RSP identity mismatch blocks removal",
+      "status": "PASS"
+    },
+    {
+      "test": "Missing acknowledged response blocks rotation",
+      "status": "PASS"
+    },
+    {
+      "test": "Conflicting cancellation and receipt are rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Published request without its reservation is rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Existing backup is never overwritten or used to authorize removal",
+      "status": "PASS"
+    },
+    {
+      "test": "Restore refuses nonempty directories and preserves existing files",
+      "status": "PASS"
+    },
+    {
+      "test": "Archive path traversal refused before any extraction",
+      "status": "PASS"
+    },
+    {
+      "test": "Changed data with valid ZIP CRC still fails SHA256 verification",
+      "status": "PASS"
+    },
+    {
+      "test": "Keep zero never removes pending requests",
+      "status": "PASS"
+    },
+    {
+      "test": "Interrupted rotation removes REQ first and leaves a verified recoverable backup",
+      "status": "PASS"
+    },
+    {
+      "test": "Unrelated files remain untouched",
+      "status": "PASS"
+    }
+  ]
+}

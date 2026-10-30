@@ -1,0 +1,857 @@
+{
+  "binarySha256": "ab6b357c5a8cee94a82f0512c002b4f1abcdc0c9530305ef1c1d7f17c3e7046a",
+  "scope": "Real COM on Z80 CPU; simulated DOS FCB, BIOS, VRAM and TCP/IP UNAPI; no physical MSX2 or full MSX emulator",
+  "results": [
+    {
+      "test": "VRAM startup generation=1 MODE=4",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=84",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=8c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=6",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=e",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=4",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=84",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=8c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=6",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=e",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=10",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=30",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=50",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=70",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=60",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=68",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=f0",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=10",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=30",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=50",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=70",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=60",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=68",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=f0",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup TEXT2 80 columns after network and disk I/O",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup TEXT1 40 columns after network and disk I/O",
+      "status": "PASS"
+    },
+    {
+      "test": "COM format, font size and full eight-pixel glyphs",
+      "status": "PASS",
+      "comBytes": 14935,
+      "entry": 256,
+      "end": 15191
+    },
+    {
+      "test": "SCREEN7 bitmap, 80 columns, 16 colors, all scanlines and page boundaries",
+      "status": "PASS"
+    },
+    {
+      "test": "80-column UI labels fit without clipping",
+      "status": "PASS"
+    },
+    {
+      "test": "80th column survives editor, preview, overlays and scrolling",
+      "status": "PASS"
+    },
+    {
+      "test": "Insert, left/right, Backspace, Delete and empty boundaries",
+      "status": "PASS"
+    },
+    {
+      "test": "Explicit newline, logical Home/End and line join",
+      "status": "PASS"
+    },
+    {
+      "test": "80-column wrap and cursor advances into next visual line",
+      "status": "PASS"
+    },
+    {
+      "test": "Enter immediately after column 80 avoids an extra blank line",
+      "status": "PASS"
+    },
+    {
+      "test": "Vertical movement clamps to short lines",
+      "status": "PASS"
+    },
+    {
+      "test": "Viewport scrolls to cursor beyond three lines and returns to top",
+      "status": "PASS"
+    },
+    {
+      "test": "Long newline-only buffer uses 16-bit row counters",
+      "status": "PASS"
+    },
+    {
+      "test": "2047-byte full buffer rejects insert without overwrite",
+      "status": "PASS"
+    },
+    {
+      "test": "Insertion at start near limit and deletion preserve NUL",
+      "status": "PASS"
+    },
+    {
+      "test": "Help/calibration overlays preserve conversation and editor",
+      "status": "PASS"
+    },
+    {
+      "test": "Local preview and window scroll preserve typed message",
+      "status": "PASS"
+    },
+    {
+      "test": "Dirty rows redraw bitmap; blinking redraws one row",
+      "status": "PASS"
+    },
+    {
+      "test": "Bitmap cursor preserves adjacent cells at even and odd columns",
+      "status": "PASS"
+    },
+    {
+      "test": "Portuguese MSX-BR bytes remain unchanged in editor",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject MSX1 generation before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject 16K VRAM before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject 16K VRAM masked before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject 64K VRAM masked before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject 64K VRAM before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject insufficient TPA before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject stack outside page 3 before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "Reject unsupported initial video mode before video writes",
+      "status": "PASS"
+    },
+    {
+      "test": "PAL timing, active page and extended register restoration",
+      "status": "PASS"
+    },
+    {
+      "test": "Exact full video/BIOS restoration from initial mode 0",
+      "status": "PASS",
+      "cpuInstructions": 2888363
+    },
+    {
+      "test": "Exact full video/BIOS restoration from initial mode 1",
+      "status": "PASS",
+      "cpuInstructions": 2888363
+    },
+    {
+      "test": "Exact full video/BIOS restoration from initial mode 2",
+      "status": "PASS",
+      "cpuInstructions": 2888363
+    },
+    {
+      "test": "Exact full video/BIOS restoration from initial mode 3",
+      "status": "PASS",
+      "cpuInstructions": 2888363
+    },
+    {
+      "test": "FCB draft create/write/readback/close/rename and Unicode escaping",
+      "status": "PASS"
+    },
+    {
+      "test": "Two-generation draft rotation and explicit restoration",
+      "status": "PASS"
+    },
+    {
+      "test": "Draft recovery on fresh process and backup fallback",
+      "status": "PASS"
+    },
+    {
+      "test": "Uncommitted draft TMP is ignored after interruption",
+      "status": "PASS"
+    },
+    {
+      "test": "Request reservation, immutable REQ and pending block",
+      "status": "PASS"
+    },
+    {
+      "test": "Pending request recovered after restart",
+      "status": "PASS"
+    },
+    {
+      "test": "Response import, ACK publication, editor preservation and explicit review",
+      "status": "PASS"
+    },
+    {
+      "test": "ACK prevents automatic reprocessing across restart and advances ID",
+      "status": "PASS"
+    },
+    {
+      "test": "Automatic periodic response polling",
+      "status": "PASS"
+    },
+    {
+      "test": "Remote error JSON is acknowledged but editor survives",
+      "status": "PASS"
+    },
+    {
+      "test": "Wrong response ID binding is not acknowledged",
+      "status": "PASS"
+    },
+    {
+      "test": "An RSP staging file is never interpreted",
+      "status": "PASS"
+    },
+    {
+      "test": "Orphan reservation is consumed and never reuses ID",
+      "status": "PASS"
+    },
+    {
+      "test": "Corrupt ACK blocks queue and automatic polling",
+      "status": "PASS"
+    },
+    {
+      "test": "Multiple pending requests lock instead of guessing",
+      "status": "PASS"
+    },
+    {
+      "test": "Read-only medium keeps editor and publishes no draft/request",
+      "status": "PASS"
+    },
+    {
+      "test": "Mid-write failure keeps old committed draft",
+      "status": "PASS"
+    },
+    {
+      "test": "Failed final rename recovers previous committed backup after restart",
+      "status": "PASS"
+    },
+    {
+      "test": "Failed ACK rename leaves response pending and undisplayed",
+      "status": "PASS"
+    },
+    {
+      "test": "Short disk read is an error, not successful EOF",
+      "status": "PASS"
+    },
+    {
+      "test": "Max-size draft roundtrip, including unsupported MSX bytes via private Unicode",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser reordered fields",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser all legal string escapes",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser escaped accent",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser valid surrogate pair",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser raw UTF-8 non-BMP",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser trailing whitespace",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser missing field",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser unknown field",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser duplicate key",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser nested object",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser array value",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser number value",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser trailing comma",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser trailing garbage",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser incomplete object",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser invalid escape",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser unpaired high surrogate",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser unpaired low surrogate",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser raw control",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser oversize decoded text",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON parser oversize metadata",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects overlong two-byte",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects overlong three-byte",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects overlong four-byte",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects UTF8 encoded surrogate",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects out of Unicode range",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects bad continuation",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 rejects standalone continuation",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON file over 32767 bytes is rejected before streaming",
+      "status": "PASS"
+    },
+    {
+      "test": "UTF8 and Unicode escapes span the 256-byte read boundary",
+      "status": "PASS"
+    },
+    {
+      "test": "End-to-end COM request to PC fixture to COM response and restart",
+      "status": "PASS"
+    },
+    {
+      "test": "History empty preserves editor and remains in live mode",
+      "status": "PASS"
+    },
+    {
+      "test": "History shows committed USER and CHATGPT after reboot without another ACK",
+      "status": "PASS"
+    },
+    {
+      "test": "History question recall only replaces an empty editor and is not sent",
+      "status": "PASS"
+    },
+    {
+      "test": "History refuses recall over unsaved input and ignores editing keys",
+      "status": "PASS"
+    },
+    {
+      "test": "History modal navigation pauses automatic response import",
+      "status": "PASS"
+    },
+    {
+      "test": "History wraps at exactly 80 and scrolls by lines and pages",
+      "status": "PASS"
+    },
+    {
+      "test": "History 80-column LF agrees with editor layout and does not double wrap",
+      "status": "PASS"
+    },
+    {
+      "test": "History supports 16-bit page positions for newline-heavy messages",
+      "status": "PASS"
+    },
+    {
+      "test": "History buffers contain full 2047-byte question and reply without crossing boundaries",
+      "status": "PASS"
+    },
+    {
+      "test": "History left/right skips archived and reserved-only IDs and clamps both ends",
+      "status": "PASS"
+    },
+    {
+      "test": "History opens latest available request when last reservation has no REQ",
+      "status": "PASS"
+    },
+    {
+      "test": "Corrupt request in locked journal is never rendered or recalled",
+      "status": "PASS"
+    },
+    {
+      "test": "Mismatched receipt response_id prevents historical response display",
+      "status": "PASS"
+    },
+    {
+      "test": "Missing historical RSP retains question and reports invalid link",
+      "status": "PASS"
+    },
+    {
+      "test": "Historical error response preserves and displays its error code",
+      "status": "PASS"
+    },
+    {
+      "test": "History read failure never overwrites editor or displays partial reply",
+      "status": "PASS"
+    },
+    {
+      "test": "Cancel requires two Ctrl+X and another key disarms it",
+      "status": "PASS"
+    },
+    {
+      "test": "Cancellation survives reboot, reserves ID, ignores late response and permits next request",
+      "status": "PASS"
+    },
+    {
+      "test": "Failed cancel rename keeps pending request and uncommitted CNT ignored after reboot",
+      "status": "PASS"
+    },
+    {
+      "test": "Read-only cancel fails without losing editor or request",
+      "status": "PASS"
+    },
+    {
+      "test": "Conflicting ACK and CAN lock the journal instead of accepting both",
+      "status": "PASS"
+    },
+    {
+      "test": "Corrupt cancel marker blocks queue and is never treated as cancellation",
+      "status": "PASS"
+    },
+    {
+      "test": "Orphan CAN without its reservation is never reused",
+      "status": "PASS"
+    },
+    {
+      "test": "History maximum reserved ID does not wrap to zero during browsing",
+      "status": "PASS"
+    },
+    {
+      "test": "Network POST commits RSP/ACK via UNAPI {}",
+      "status": "PASS"
+    },
+    {
+      "test": "Network POST commits RSP/ACK via UNAPI {\"rom\":true}",
+      "status": "PASS"
+    },
+    {
+      "test": "Network POST commits RSP/ACK via UNAPI {\"direct\":true}",
+      "status": "PASS"
+    },
+    {
+      "test": "Network POST commits RSP/ACK via UNAPI {\"bufferBusy\":2}",
+      "status": "PASS"
+    },
+    {
+      "test": "Network POST commits RSP/ACK via UNAPI {\"fragments\":[1]}",
+      "status": "PASS"
+    },
+    {
+      "test": "Network POST commits RSP/ACK via UNAPI {\"fragments\":[256]}",
+      "status": "PASS"
+    },
+    {
+      "test": "Network mode absent keeps full offline behavior and makes no UNAPI calls",
+      "status": "PASS"
+    },
+    {
+      "test": "Configured LAN without pending request does not open a connection",
+      "status": "PASS"
+    },
+    {
+      "test": "Existing RSP is imported without resubmitting pending REQ",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: missing EXTBIO",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: missing TCP",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: missing helper",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: bad entry",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: API major",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: no active TCP",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: blocking OPEN",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: OPEN error",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: STATE error",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: unexpected state",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: SEND error",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: RCV error",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: WAIT error",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: receive overrun",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: urgent data",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: connect timeout",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: receive/EOF timeout",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: close timeout",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: close error",
+      "status": "PASS"
+    },
+    {
+      "test": "Network failure preserves request: Escape",
+      "status": "PASS"
+    },
+    {
+      "test": "Abort error retains ownership and a later transmission first retries cleanup",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects HTTP 500",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects HTTP 100",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects duplicate length",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects chunked",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects gzip",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects missing length",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects length overflow",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects length beyond file limit",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects negative length",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects empty body",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects missing type",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects wrong type",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects folded field",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects empty field name",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects line exceeds 255",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects headers exceed 2048",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects bare LF",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects truncated body",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP framing rejects extra body bytes",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP header names and media type accept ASCII case and OWS",
+      "status": "PASS"
+    },
+    {
+      "test": "Valid body with wrong envelope binding is never published",
+      "status": "PASS"
+    },
+    {
+      "test": "Partially decoded or invalid JSON remains staged without ACK",
+      "status": "PASS"
+    },
+    {
+      "test": "JSON remote error is committed as a response and acknowledged",
+      "status": "PASS"
+    },
+    {
+      "test": "Network body write failure preserves input and does not publish RSP",
+      "status": "PASS"
+    },
+    {
+      "test": "Interrupted RXT is ignored at boot and retry uses original immutable REQ",
+      "status": "PASS"
+    },
+    {
+      "test": "Largest request is streamed in 256-byte API blocks and exact byte length",
+      "status": "PASS"
+    },
+    {
+      "test": "Largest decoded reply survives multi-block network and history buffers",
+      "status": "PASS"
+    },
+    {
+      "test": "Network timeout calculations survive JIFFY wraparound",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  8.8.8.8 80",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  192.168.1.10 0",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  192.168.1.10 65536",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  256.1.1.1 80",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  192.168.1.10",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  192.168.1.10 80 extra",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  172.32.1.1 80",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  0000000192.168.1.10 80",
+      "status": "PASS"
+    },
+    {
+      "test": "Network command tail rejects  192.168.1.10 00000080",
+      "status": "PASS"
+    },
+    {
+      "test": "Gateway 202 preserves request/editor, creates no ACK and shows processing",
+      "status": "PASS"
+    },
+    {
+      "test": "Automatic gateway poll after 202 reuses request and imports final response",
+      "status": "PASS"
+    },
+    {
+      "test": "Ctrl+T disables network polling while manual Ctrl+W remains available",
+      "status": "PASS"
+    },
+    {
+      "test": "Network polling error stops automatic network retries after processing state",
+      "status": "PASS"
+    },
+    {
+      "test": "Local cancellation clears processing flag and never autosubmits a new question",
+      "status": "PASS"
+    },
+    {
+      "test": "Restart keeps durable pending REQ but requires manual first gateway lookup",
+      "status": "PASS"
+    },
+    {
+      "test": "Malformed 202 status is not treated as processing",
+      "status": "PASS"
+    },
+    {
+      "test": "Failed cleanup after 202 is reported as an outstanding owned connection",
+      "status": "PASS"
+    },
+    {
+      "test": "80-column font spacing, confusables, accents and 4:3 reading sample",
+      "status": "PASS"
+    }
+  ]
+}

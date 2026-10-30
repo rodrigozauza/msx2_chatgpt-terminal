@@ -1,0 +1,53 @@
+{
+  "scope": "Node filesystem and manual offline fixture publisher; no network",
+  "results": [
+    {
+      "test": "Read generated-format request",
+      "status": "PASS"
+    },
+    {
+      "test": "Duplicate field rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Nested value rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Trailing data rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Unpaired surrogate rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Invalid UTF8 rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "BOM rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Oversize reply rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Non-ASCII error code rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Remote error fixture accepted",
+      "status": "PASS"
+    },
+    {
+      "test": "Real file stage/sync/rename publication",
+      "status": "PASS"
+    },
+    {
+      "test": "Published RSP cannot be overwritten",
+      "status": "PASS"
+    }
+  ]
+}

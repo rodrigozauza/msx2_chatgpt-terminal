@@ -1,0 +1,62 @@
+{
+  "sourceChats": [
+    "Prompt terminal MSX2 GPT",
+    "Ativar e verificar RAM"
+  ],
+  "userReported": {
+    "sdMapperRAMROMKB": 512,
+    "sdCardGB": 4,
+    "nextor": "2.1",
+    "interNestorLite": "2.3",
+    "obsoNETBIOS": "1.3",
+    "columns": 64,
+    "language": "Assembly Z80",
+    "dos": [
+      "MSX-DOS 1",
+      "MSX-DOS 2",
+      "Nextor"
+    ]
+  },
+  "target": "MSX2 ou superior com 128 KB VRAM",
+  "network": "TCP/IP UNAPI index 1; preserve previously accepted stack/helper",
+  "actualLANAddresses": "not available; preserve command line and gateway configuration",
+  "hardwareTest": "New font/layout physical SM-X homologation pending",
+  "currentMachineUserReported": {
+    "board": "SM-X / SM-X EX",
+    "firmware": "One Chip MSX / KdL base",
+    "generation": "MSX2+ sintetizado em FPGA",
+    "vramKB": 128,
+    "mainRAM": "Mapper 2 MB ou 4 MB, conforme revisão/firmware; não medido"
+  },
+  "displayRevision": {
+    "version": "0.7.1",
+    "columns": 80,
+    "rows": 24,
+    "cellPixels": [
+      6,
+      8
+    ],
+    "sourceGlyphPixels": [
+      5,
+      7
+    ],
+    "screen": 7,
+    "selection": "SCREEN 7 retained after 4:3 preview inspection; BIOS R1 bit7 check corrected",
+    "physicalValidation": "RETEST_PENDING"
+  },
+  "previousDisplayRevision": {
+    "requested": "Melhorar legibilidade, reduzir colunas e regenerar o projeto",
+    "columns": 32,
+    "rows": 16,
+    "cellPixels": [
+      16,
+      12
+    ],
+    "sourceGlyphPixels": [
+      8,
+      8
+    ],
+    "screen": 7,
+    "selection": "Chosen for readability in response to current user request"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "MSX ChatGPT Terminal",
+  "version": "0.7.1",
+  "date": "2026-10-29",
+  "hardware": "MSX2/MSX2+, 128 KB VRAM; existing ObsoNET / SD Mapper",
+  "video": {
+    "mode": 7,
+    "width": 512,
+    "height": 212,
+    "columns": 80,
+    "rows": 24,
+    "cellWidth": 6,
+    "cellHeight": 8,
+    "sourceFontWidth": 5,
+    "sourceFontHeight": 7,
+    "marginPixels": 16,
+    "transcriptRows": 18,
+    "editorRows": 3,
+    "historyContentRows": 17
+  },
+  "binary": {
+    "file": "MSXCHAT.COM",
+    "alias": "MSX_CHAT.COM",
+    "bytes": 14935,
+    "sha256": "ab6b357c5a8cee94a82f0512c002b4f1abcdc0c9530305ef1c1d7f17c3e7046a",
+    "entry": "0100h",
+    "endExclusive": "3B57h"
+  },
+  "tests": {
+    "z80": 211,
+    "gateway": 37,
+    "lanServer": 18,
+    "publisher": 12,
+    "backup": 16,
+    "currentRunTotal": 294,
+    "fullMSXEmulator": "NOT_RUN",
+    "physicalMSX2": "RETEST_PENDING",
+    "authenticatedOpenAI": "NOT_RUN"
+  },
+  "configuration": "docs/CONFIGURACAO-ANTERIOR.json",
+  "fontDecision": "SCREEN 7 retained after visual inspection of simulated VRAM in 4:3; physical monitor verification pending",
+  "fix": "Accept valid MSX2 BIOS R#1 states with bit 7 clear; write reserved bit as zero in SCREEN 7; restore original DOS registers",
+  "variant": "screen7-80col"
+}

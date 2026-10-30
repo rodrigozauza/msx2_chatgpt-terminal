@@ -1,0 +1,16 @@
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: 128KB BIOS encoding must start SCREEN7: MSXCHAT: SCREEN 7 requires 128K VRAM.
+
+
+true !== false
+
+    at evalmachine.<anonymous>:249:10
+    at test (evalmachine.<anonymous>:245:96)
+    at evalmachine.<anonymous>:247:2
+    at Script.runInContext (node:vm:149:12)
+    at Script.runInNewContext (node:vm:154:17)
+    at Module.runInNewContext (node:vm:310:38)
+    at C:\Users\Rodrigo\Documents\ChatGPT\Produtos MSX\.node_repl_cell_22.mjs:37:360

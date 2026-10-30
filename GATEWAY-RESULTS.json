@@ -1,0 +1,153 @@
+{
+  "scope": "PC filesystem and mocked HTTPS adapter/HTTP streams; no live OpenAI call",
+  "results": [
+    {
+      "test": "HTTPS uses fixed official host, certificate validation and bearer only in headers",
+      "status": "PASS"
+    },
+    {
+      "test": "Output is collected across assistant messages rather than output[0]",
+      "status": "PASS"
+    },
+    {
+      "test": "Model context receives safe Unicode and no local private-byte encoding",
+      "status": "PASS"
+    },
+    {
+      "test": "Large Unicode reply is truncated at scalar boundaries with visible marker",
+      "status": "PASS"
+    },
+    {
+      "test": "Secret in unexpected upstream text is redacted before local output",
+      "status": "PASS"
+    },
+    {
+      "test": "API incomplete maps to a local error envelope",
+      "status": "PASS"
+    },
+    {
+      "test": "API refusal maps to a local error envelope",
+      "status": "PASS"
+    },
+    {
+      "test": "API empty maps to a local error envelope",
+      "status": "PASS"
+    },
+    {
+      "test": "API failed maps to a local error envelope",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 400 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 401 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 403 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 404 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 429 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 500 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP 302 is sanitized and never retried automatically",
+      "status": "PASS"
+    },
+    {
+      "test": "Network and timeout failures do not re-dispatch the API request",
+      "status": "PASS"
+    },
+    {
+      "test": "Invalid UTF8, malformed schema and unpaired Unicode are rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "API response is bounded to 1 MiB",
+      "status": "PASS"
+    },
+    {
+      "test": "Configuration requires key/model and refuses disabled TLS verification",
+      "status": "PASS"
+    },
+    {
+      "test": "API is invoked only after durable reservation and start records exist",
+      "status": "PASS"
+    },
+    {
+      "test": "Concurrent polls reserve one job and produce one API call",
+      "status": "PASS"
+    },
+    {
+      "test": "Changed content with same ID is rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Persisted response replays after gateway restart without another API call",
+      "status": "PASS"
+    },
+    {
+      "test": "Conversation sends bounded earlier question/answer pairs as API input",
+      "status": "PASS"
+    },
+    {
+      "test": "Context turn limit discards older pairs and keeps chronological order",
+      "status": "PASS"
+    },
+    {
+      "test": "Failed API turns do not become successful conversation context",
+      "status": "PASS"
+    },
+    {
+      "test": "API timeout is terminal for that ID and is not resubmitted on polling",
+      "status": "PASS"
+    },
+    {
+      "test": "A second gateway cannot take the same journal lock",
+      "status": "PASS"
+    },
+    {
+      "test": "A started job without result becomes ambiguous and never calls API again",
+      "status": "PASS"
+    },
+    {
+      "test": "Reserved but unsent job with changed configuration is not dispatched",
+      "status": "PASS"
+    },
+    {
+      "test": "Corrupt reservation is preserved and cannot trigger API work",
+      "status": "PASS"
+    },
+    {
+      "test": "Failed result commit never triggers another API dispatch",
+      "status": "PASS"
+    },
+    {
+      "test": "Unknown older request IDs are rejected instead of branching conversation silently",
+      "status": "PASS"
+    },
+    {
+      "test": "Inspection is read-only and excludes question/answer bodies",
+      "status": "PASS"
+    },
+    {
+      "test": "Gateway HTTP returns 202 before API completion, then 200 local envelope",
+      "status": "PASS"
+    },
+    {
+      "test": "Graceful shutdown waits for the active API call and leaves queued work unsent",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "binarySha256": "ab6b357c5a8cee94a82f0512c002b4f1abcdc0c9530305ef1c1d7f17c3e7046a",
+  "results": [
+    {
+      "test": "VRAM startup generation=1 MODE=4",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=84",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=8c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=6",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=1 MODE=e",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=4",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=84",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=8c",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=6",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup generation=2 MODE=e",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=10",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=30",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=50",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=70",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=60",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=68",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=1 R1=f0",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=10",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=30",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=50",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=70",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=60",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=68",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup reserved R1 bit generation=2 R1=f0",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup TEXT2 80 columns after network and disk I/O",
+      "status": "PASS"
+    },
+    {
+      "test": "VRAM startup TEXT1 40 columns after network and disk I/O",
+      "status": "PASS"
+    }
+  ]
+}

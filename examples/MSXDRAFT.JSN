@@ -1,0 +1,10 @@
+{
+  "protocol": "msxchat/1",
+  "request_id": "00000000",
+  "conversation_id": "00000001",
+  "state": "draft",
+  "message": "Olá, Expert! Teste com \"aspas\", \\ e nova linha.\nSegunda linha.",
+  "response_id": "",
+  "reply": "",
+  "error_code": ""
+}

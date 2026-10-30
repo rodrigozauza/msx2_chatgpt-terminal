@@ -1,0 +1,65 @@
+{
+  "comparison": "MSX2-CHATGPT-32COL.zip",
+  "files": [
+    {
+      "file": "src/NETWORK.ASM",
+      "identical": true,
+      "change": null,
+      "sha256": "ae99b65c704bdfb4f8246da2c59b6f66a3b50b0c0199fddab4ba0b1d355f39af"
+    },
+    {
+      "file": "src/NETCONFIG.ASM",
+      "identical": false,
+      "change": "UI title 32x16 to 80x24",
+      "sha256": "2d0511972195950eee2d56db78a2413607d962c8ce7f9c16815288488e8a45a5"
+    },
+    {
+      "file": "src/UNAPI.ASM",
+      "identical": true,
+      "change": null,
+      "sha256": "f18c41438a5b622ad1e20f6d8573f4a17b190da05e858042125aca1108608a5b"
+    },
+    {
+      "file": "src/HTTP.ASM",
+      "identical": true,
+      "change": null,
+      "sha256": "5c0b81cd364d03fe2a95c0dbcb43f83644d1e221936bbe0aaa386155fced1608"
+    },
+    {
+      "file": "src/JSON.ASM",
+      "identical": true,
+      "change": null,
+      "sha256": "827786e54162a15cb0685c1d543b836ea0dd6be3521a1e5e33622f3e017ede25"
+    },
+    {
+      "file": "src/HISTORY.ASM",
+      "identical": true,
+      "change": null,
+      "sha256": "4f3ba1e89842da06c39294c5700a5388b99500f03e596341198033183acba35f"
+    },
+    {
+      "file": "src/DOSIO.ASM",
+      "identical": true,
+      "change": null,
+      "sha256": "0021bdce7dfe87e95078243bee072ed917b307eb6064a7ff91f4b7164839fb2d"
+    },
+    {
+      "file": "GATEWAY.cjs",
+      "identical": true,
+      "change": null,
+      "sha256": "c7aca3da70baff10a09fb56468becdf9c177a404be1a1737dece693ca82dd0f6"
+    },
+    {
+      "file": "GATEWAY-STORE.cjs",
+      "identical": true,
+      "change": null,
+      "sha256": "ecbe69670557493a02aba7aedce6fe2db8e187a2c244b84025791955ceb7aa35"
+    },
+    {
+      "file": "LAN-SERVER.cjs",
+      "identical": true,
+      "change": null,
+      "sha256": "eb869f0871a03dcd13fb688de12ce28bbe8bcd4d366960d565b5e7a3bcd27688"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "protocol": "msxchat/1",
+  "request_id": "00000001",
+  "conversation_id": "00000001",
+  "state": "cancelled",
+  "message": "",
+  "response_id": "",
+  "reply": "",
+  "error_code": ""
+}

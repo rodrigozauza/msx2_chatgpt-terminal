@@ -1,0 +1,140 @@
+{
+  "version": "0.7.1",
+  "baseline": "MSX2-CHATGPT-80COL.zip (v0.7)",
+  "changes": "MSX startup check, SCREEN7 R1 values, obsolete error, gateway column instructions and regression coverage",
+  "reviewedAreas": [
+    "startup and MSX generation/VRAM guards",
+    "MAIN-ROM BIOS calls and exact video restoration",
+    "TPA allocation and buffer bounds",
+    "80-column rendering/editor/overlays/history",
+    "FCB disk I/O and durable request/response/cancel records",
+    "strict JSON/UTF8 and MSX-BR conversion",
+    "UNAPI discovery, bounded TCP/HTTP and cleanup",
+    "PC gateway API boundary, queue/replay and offline helpers"
+  ],
+  "sourceComparison": [
+    {
+      "file": "src/BROWSER.ASM",
+      "identicalTo07": true,
+      "sha256": "866da9bf18b357a9abc0a1fa27734710ed81097fecbc1b9a9322b677f73ada9d"
+    },
+    {
+      "file": "src/CANCEL.ASM",
+      "identicalTo07": true,
+      "sha256": "ebf6ef6261d5cc3e2cfb36fc01364fea6ac5dbd7d49aac72bec747b55a7a71b4"
+    },
+    {
+      "file": "src/CONFIG.ASM",
+      "identicalTo07": true,
+      "sha256": "4447b7b11684b8f8f538e672f636250765b125dea727a19b1e04e4e6d3317376"
+    },
+    {
+      "file": "src/DOSIO.ASM",
+      "identicalTo07": true,
+      "sha256": "0021bdce7dfe87e95078243bee072ed917b307eb6064a7ff91f4b7164839fb2d"
+    },
+    {
+      "file": "src/EDITOR.ASM",
+      "identicalTo07": true,
+      "sha256": "ee6da2bd31be7ec9579a09f9d89ac7443b24272fa8c3997d6f13e5f945ad37f4"
+    },
+    {
+      "file": "src/ERRORS.ASM",
+      "identicalTo07": false,
+      "sha256": "1ce6f81956a4c34ae778a0483f370754aaed687220ca0ef60ded9d836a185108"
+    },
+    {
+      "file": "src/FONT8X8.ASM",
+      "identicalTo07": true,
+      "sha256": "61488ef184b7ce1131fc0538d2ec8b49affab996b588dcff6d7e627834843ace"
+    },
+    {
+      "file": "src/HISTORY.ASM",
+      "identicalTo07": true,
+      "sha256": "4f3ba1e89842da06c39294c5700a5388b99500f03e596341198033183acba35f"
+    },
+    {
+      "file": "src/HTTP.ASM",
+      "identicalTo07": true,
+      "sha256": "5c0b81cd364d03fe2a95c0dbcb43f83644d1e221936bbe0aaa386155fced1608"
+    },
+    {
+      "file": "src/JSON.ASM",
+      "identicalTo07": true,
+      "sha256": "827786e54162a15cb0685c1d543b836ea0dd6be3521a1e5e33622f3e017ede25"
+    },
+    {
+      "file": "src/KEYBOARD.ASM",
+      "identicalTo07": true,
+      "sha256": "d18c1ec6270b7e4203f200ed63b90ab9b75c24558397fe0dd8fa15ac264402b7"
+    },
+    {
+      "file": "src/MAIN.ASM",
+      "identicalTo07": false,
+      "sha256": "8cd4e4ade8cf0633fa2ea7eb8fb9194f96de64c953cf03128d35eebd2047b3dd"
+    },
+    {
+      "file": "src/NETCONFIG.ASM",
+      "identicalTo07": true,
+      "sha256": "2d0511972195950eee2d56db78a2413607d962c8ce7f9c16815288488e8a45a5"
+    },
+    {
+      "file": "src/NETWORK.ASM",
+      "identicalTo07": true,
+      "sha256": "ae99b65c704bdfb4f8246da2c59b6f66a3b50b0c0199fddab4ba0b1d355f39af"
+    },
+    {
+      "file": "src/SCREEN7.ASM",
+      "identicalTo07": false,
+      "sha256": "25db3725a048b857899c8e405f7b936e326a347a343d31edea1c039701abb829"
+    },
+    {
+      "file": "src/TERMINAL.ASM",
+      "identicalTo07": true,
+      "sha256": "b9de5c10263745bfc6e31fc334f9eeb2133ffb77086af5f874802fab24fae797"
+    },
+    {
+      "file": "src/UNAPI.ASM",
+      "identicalTo07": true,
+      "sha256": "f18c41438a5b622ad1e20f6d8573f4a17b190da05e858042125aca1108608a5b"
+    },
+    {
+      "file": "src/UNICODE.ASM",
+      "identicalTo07": true,
+      "sha256": "b6a861163e0885d90f054a76ed42b330245b05b8e5fc097b5ca6a30e4b186430"
+    },
+    {
+      "file": "GATEWAY.cjs",
+      "identicalTo07": true,
+      "sha256": "c7aca3da70baff10a09fb56468becdf9c177a404be1a1737dece693ca82dd0f6"
+    },
+    {
+      "file": "GATEWAY-STORE.cjs",
+      "identicalTo07": true,
+      "sha256": "ecbe69670557493a02aba7aedce6fe2db8e187a2c244b84025791955ceb7aa35"
+    },
+    {
+      "file": "OPENAI-CLIENT.cjs",
+      "identicalTo07": false,
+      "sha256": "a9ddcd5e528b5cbb3bdf8850561f9ba7728c4dd8bc70f06fd605f7a003134cb3"
+    },
+    {
+      "file": "LAN-SERVER.cjs",
+      "identicalTo07": true,
+      "sha256": "eb869f0871a03dcd13fb688de12ce28bbe8bcd4d366960d565b5e7a3bcd27688"
+    },
+    {
+      "file": "make-response.cjs",
+      "identicalTo07": true,
+      "sha256": "8a06e7fdcebac8842d1c77927740ade8062d21e68b3d082167ed2dbc1997a69e"
+    },
+    {
+      "file": "history-backup.py",
+      "identicalTo07": true,
+      "sha256": "b59589ec05e90090fa93a06d209e4ac5c560d30702f38f182c3faf52616c864b"
+    }
+  ],
+  "physicalMSX2": "NOT_RUN",
+  "fullMSXEmulator": "NOT_RUN",
+  "paidAPI": "NOT_RUN"
+}

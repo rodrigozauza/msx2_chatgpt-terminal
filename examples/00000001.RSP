@@ -1,0 +1,10 @@
+{
+  "protocol": "msxchat/1",
+  "request_id": "00000001",
+  "conversation_id": "00000001",
+  "state": "completed",
+  "message": "",
+  "response_id": "00000001",
+  "reply": "Resposta criada manualmente para teste offline. A API não foi chamada.",
+  "error_code": ""
+}

@@ -1,0 +1,1 @@
+Original 5x7 glyph patterns in font5x7.json and their compact accented derivatives are dedicated to the public domain under CC0 1.0 Universal. https://creativecommons.org/publicdomain/zero/1.0/

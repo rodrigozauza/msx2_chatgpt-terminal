@@ -1,0 +1,12 @@
+item,ambiente,estado,observacao
+Inicializar SCREEN7,MSX2 fisico,PENDENTE,Conferir 80 colunas 24 linhas e cores
+Restaurar DOS com Esc,MSX2 fisico,PENDENTE,Conferir console e teclado
+Salvar e reabrir rascunho,SD Mapper fisico,PENDENTE,Preservar acentos e texto
+Recuperar pedido apos reiniciar,SD Mapper fisico,PENDENTE,Conferir mesmo ID
+Enviar pergunta e consultar HTTP202,OBSONET fisica,PENDENTE,Usar IP e porta ja configurados
+Receber resposta e publicar ACK,MSX2 gateway API,PENDENTE,Conferir resposta no historico
+Consultar historico e cancelar pedido,MSX2 fisico,PENDENTE,Editor deve permanecer
+Verificar frequencia e fonte,Monitor real,PENDENTE,Ctrl+R para calibracao
+Legibilidade em 80 colunas,SM-X monitor real,PENDENTE,Conferir células 6x8; distinguir O/0 I/l/1 e verificar linha completa e acentos
+Inicializar com R1=70h,MSX2 fisico,PENDENTE,Nao deve aparecer a exigencia 16K VRAM addressing
+Retorno de gravacao e rede,MSX2 fisico,PENDENTE,Reabrir SCREEN7 e restaurar DOS com Esc

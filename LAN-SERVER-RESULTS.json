@@ -1,0 +1,77 @@
+{
+  "scope": "PC filesystem plus in-memory HTTP request/response streams; no real TCP",
+  "results": [
+    {
+      "test": "Fragmented HTTP body produces a bounded local response and Content-Length",
+      "status": "PASS"
+    },
+    {
+      "test": "Idempotent retry replays response without changing the cache file",
+      "status": "PASS"
+    },
+    {
+      "test": "Restart replays persisted result even if configured reply changes",
+      "status": "PASS"
+    },
+    {
+      "test": "Changed question under same request ID returns 409",
+      "status": "PASS"
+    },
+    {
+      "test": "Concurrent identical requests serialize to one persisted result",
+      "status": "PASS"
+    },
+    {
+      "test": "Peer restriction rejects another LAN address",
+      "status": "PASS"
+    },
+    {
+      "test": "Wrong endpoint and method are rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Missing or duplicate Content-Length is rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Chunked and compressed bodies are rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Declared length beyond limit is rejected before caching",
+      "status": "PASS"
+    },
+    {
+      "test": "Wrong content type is rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Truncated and excess request body are rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Invalid UTF8 and duplicate JSON keys are rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Input must be a valid pending request with nonzero local ID",
+      "status": "PASS"
+    },
+    {
+      "test": "Remote error response is encoded in the local envelope",
+      "status": "PASS"
+    },
+    {
+      "test": "Invalid persistent cache is preserved and returns 503",
+      "status": "PASS"
+    },
+    {
+      "test": "Response fragmentation preserves exact Content-Length and body",
+      "status": "PASS"
+    },
+    {
+      "test": "CLI address policy accepts private LAN and rejects wildcard/public targets",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "date": "2026-10-27",
+  "source": "Historical Phase 6 gateway terminal, followed by MSX2 SCREEN 7 revisions 0.5/0.6/0.7",
+  "target": "MSX2 SCREEN 7 / OBSONET / SD Mapper",
+  "preserved": [
+    {
+      "file": "GATEWAY.cjs",
+      "identical": true,
+      "sha256": "c7aca3da70baff10a09fb56468becdf9c177a404be1a1737dece693ca82dd0f6"
+    },
+    {
+      "file": "GATEWAY-STORE.cjs",
+      "identical": true,
+      "sha256": "ecbe69670557493a02aba7aedce6fe2db8e187a2c244b84025791955ceb7aa35"
+    },
+    {
+      "file": "OPENAI-CLIENT.cjs",
+      "identical": true,
+      "sha256": "1d41c9c551fb9e254d0cb2f4dd96f9d6f4e8ec875760b20235734a2b911da9eb"
+    },
+    {
+      "file": "LAN-SERVER.cjs",
+      "identical": true,
+      "sha256": "eb869f0871a03dcd13fb688de12ce28bbe8bcd4d366960d565b5e7a3bcd27688"
+    },
+    {
+      "file": "RUN-GATEWAY.cmd",
+      "identical": true,
+      "sha256": "bc9cc203a1e775079e893b71862517cd018f639bffde0ac33b7373f73af77282"
+    },
+    {
+      "file": "RUN-LAN.cmd",
+      "identical": true,
+      "sha256": "fbfb792088a5ea6c4db2429d3e2c8bc9e62ab6fd32b13cb9570bc3ca45c1a7d3"
+    },
+    {
+      "file": "history-backup.py",
+      "identical": true,
+      "sha256": "b59589ec05e90090fa93a06d209e4ac5c560d30702f38f182c3faf52616c864b"
+    },
+    {
+      "file": "make-response.cjs",
+      "identical": true,
+      "sha256": "8a06e7fdcebac8842d1c77927740ade8062d21e68b3d082167ed2dbc1997a69e"
+    },
+    {
+      "file": "src/NETWORK.ASM",
+      "identical": true,
+      "sha256": "ae99b65c704bdfb4f8246da2c59b6f66a3b50b0c0199fddab4ba0b1d355f39af"
+    },
+    {
+      "file": "src/NETCONFIG.ASM",
+      "identical": false,
+      "sha256": "eb0c4442d4daacb6b3a470bbd59daa7943acdcf92b633f3f6d1d567766cd5597"
+    },
+    {
+      "file": "src/UNAPI.ASM",
+      "identical": true,
+      "sha256": "f18c41438a5b622ad1e20f6d8573f4a17b190da05e858042125aca1108608a5b"
+    },
+    {
+      "file": "src/HTTP.ASM",
+      "identical": true,
+      "sha256": "5c0b81cd364d03fe2a95c0dbcb43f83644d1e221936bbe0aaa386155fced1608"
+    },
+    {
+      "file": "src/JSON.ASM",
+      "identical": true,
+      "sha256": "827786e54162a15cb0685c1d543b836ea0dd6be3521a1e5e33622f3e017ede25"
+    },
+    {
+      "file": "src/HISTORY.ASM",
+      "identical": true,
+      "sha256": "4f3ba1e89842da06c39294c5700a5388b99500f03e596341198033183acba35f"
+    },
+    {
+      "file": "src/DOSIO.ASM",
+      "identical": true,
+      "sha256": "0021bdce7dfe87e95078243bee072ed917b307eb6064a7ff91f4b7164839fb2d"
+    }
+  ],
+  "screen7Revision": {
+    "version": "0.5-msx2-screen7.1",
+    "reason": "128KB standard MODE field 04h rejected by old CP 06h",
+    "reportedMachine": "SM-X, OCM/KdL, MSX2+, 128KB VRAM, 2MB/4MB mapper RAM",
+    "binaryChanges": {
+      "bytes": 15720,
+      "diff": [
+        {
+          "fileOffset": 49,
+          "address": "131",
+          "before": 6,
+          "after": 4
+        },
+        {
+          "fileOffset": 50,
+          "address": "132",
+          "before": 194,
+          "after": 218
+        }
+      ],
+      "aliasIdentical": true,
+      "sha256": "69aef4b10563c70d19cca026f61ac863279fb5882f84c261d9c2e97f46c3422a"
+    },
+    "changedSources": [
+      "src/MAIN.ASM",
+      "build.py",
+      "tests/test-msxchat.cjs"
+    ],
+    "source": "https://konamiman.github.io/MSX2-Technical-Handbook/md/Chapter2.html"
+  },
+  "readabilityRevision": {
+    "version": "0.6-msx2-screen7-32col",
+    "previous": "0.5-msx2-screen7.1",
+    "backup": "work/screen7-32col/original",
+    "font": {
+      "source": "https://github.com/dhepper/font8x8",
+      "license": "Public Domain",
+      "tables": [
+        "tools/font8x8_basic.h",
+        "tools/font8x8_ext_latin.h"
+      ]
+    },
+    "changedSources": [
+      "src/CONFIG.ASM",
+      "src/MAIN.ASM",
+      "src/SCREEN7.ASM",
+      "src/EDITOR.ASM",
+      "src/TERMINAL.ASM",
+      "src/BROWSER.ASM",
+      "src/NETCONFIG.ASM",
+      "src/FONTSPEC.json",
+      "tools/make_font.py",
+      "tests/test-msxchat.cjs"
+    ],
+    "generated": [
+      "FONT8X8.bin",
+      "src/FONT8X8.ASM",
+      "src/UNICODE.ASM",
+      "MSXCHAT.COM",
+      "MSX_CHAT.COM"
+    ],
+    "preservesVRAMFix": true
+  },
+  "preservedComparisonVersion": "0.5-msx2-screen7 (historical comparison to original project)",
+  "columns80Revision": {
+    "version": "0.7-msx2-screen7-80col",
+    "previous": "0.6-msx2-screen7-32col",
+    "previousPackage": "../MSX2-CHATGPT-32COL.zip",
+    "font": "Original CC0 tools/font5x7.json, 5x7 in 6x8 cells",
+    "video": "SCREEN 7 / 80x24 / 16-pixel margins",
+    "networkConfigChange": "UI title only: 32x16 to 80x24",
+    "preservedModules": [
+      "src/NETWORK.ASM",
+      "src/UNAPI.ASM",
+      "src/HTTP.ASM",
+      "src/JSON.ASM",
+      "src/HISTORY.ASM",
+      "src/DOSIO.ASM"
+    ],
+    "physicalValidation": "NOT_RUN"
+  },
+  "biosR1Revision": {
+    "version": "0.7.1",
+    "date": "2026-10-29",
+    "previous": "0.7-msx2-screen7-80col",
+    "reportedError": "BIOS must have 16K VRAM addressing enabled",
+    "cause": "Invalid TMS9918 R1 bit7 requirement applied to V9938/V9958; test fixture F0h hid normal 70h state",
+    "changedSources": [
+      "src/MAIN.ASM",
+      "src/SCREEN7.ASM",
+      "src/ERRORS.ASM",
+      "OPENAI-CLIENT.cjs",
+      "tests/test-msxchat.cjs",
+      "tests/test-gateway.cjs"
+    ],
+    "physicalValidation": "RETEST_PENDING",
+    "reference": "https://ftp.whtech.com/YAHOO%20group%20backups/GENEVE/FILES/v9938%20Application%20Manual.htm"
+  }
+}

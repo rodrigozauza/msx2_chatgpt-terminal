@@ -1,0 +1,54 @@
+name: Validate and publish release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Assemble MSX executables
+        run: python build.py
+      - name: Run Z80 regression suite
+        run: node tests/test-msxchat.cjs
+      - name: Run PC gateway and storage suites
+        run: |
+          node tests/test-gateway.cjs
+          node tests/test-lan-server.cjs
+          node tests/test-helper.cjs
+          python tests/test-backup.py
+      - name: Package and verify
+        run: |
+          python tools/package_release.py
+          node VERIFICAR.cjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: msx2-chatgpt-validated
+          path: dist/*
+      - name: Publish versioned GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          version=$(python -c "import json; print(json.load(open('RELEASE.json'))['version'])")
+          tag="v$version"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists; verified build retained as workflow artifact."
+          else
+            gh release create "$tag" dist/* MSXCHAT.COM MSX_CHAT.COM --target "$GITHUB_SHA" --title "MSX2 ChatGPT $tag — SCREEN 7 / 80 colunas" --notes-file RELEASE-NOTES.md --latest
+          fi
