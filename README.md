@@ -1,6 +1,6 @@
-# Terminal ChatGPT para MSX2 — SCREEN 7, 80 colunas
+# msx-chatgpt-terminal
+Como amante da retrocomputação, resolvi pedir a IA para fazer um terminal em modo gráfico em micros de 8 bits, padrão MSX v2, a partir de um projeto inicial que fiz dessa interface em 1985. Acho que ficou legal. Com o tempo, vou incrementar novas funcionalidades. Fique a vontade também se você é conhecedor do assunto ! divirta-se !  Terminal ChatGPT para MSX2 — SCREEN 7, 80 colunas
 
-Como amante da retrocomputação, resolvi pedir a IA para fazer um terminal em modo gráfico em micros de 8 bits, padrão MSX, a partir de um projeto inicial que fiz dessa interface em 1985. Acho que ficou legal. Com o tempo, vou incrementar novas funcionalidades. Fique a vontade também se você é conhecedor do assunto ! divirta-se !
 
 
 Revisão **0.7.2** — [baixar versão publicada](https://github.com/rodrigozauza/msx2_chatgpt-terminal/releases/latest).
